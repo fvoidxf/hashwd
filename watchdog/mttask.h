@@ -40,14 +40,12 @@ protected:
 	std::string																				m_dbname;
 
 	boost::shared_ptr< std::thread >														m_in,m_gen,m_out;
-	static bool																				m_flag[2];
+	//static bool																				m_flag[2];
 
 public:
 	static void walkRoot(const std::string& root, boost::lockfree::queue<char*, boost::lockfree::fixed_sized<false> >* pQueue);
 	static void md5Calc(boost::lockfree::queue<char*, boost::lockfree::fixed_sized<false> >* pInQueue, boost::lockfree::queue<MidVal*, boost::lockfree::fixed_sized<false> >* pMd5Queue);
 	static void writeDb( boost::lockfree::queue<MidVal*, boost::lockfree::fixed_sized<false> >* pMd5Queue);
-
-	static std::streampos filesize(const std::string& fname);
 };
 
 //=============================================================================================

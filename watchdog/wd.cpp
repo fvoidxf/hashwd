@@ -109,12 +109,17 @@ int main(int argc, char *argv[])
 			MTTask task(directory);
 
 			task.startInputThread();
-			task.startGenerateThread();
-			task.startOutputThread();
+			task.InputThreadJoin();
 
-			task.InputThreadJoin();		
+			task.startGenerateThread();
 			task.GenerateThreadJoin();
+
+			task.startOutputThread();
 			task.OutputThreadJoin();
+
+			/*task.InputThreadJoin();		
+			task.GenerateThreadJoin();
+			task.OutputThreadJoin();*/
 
 			return 0;
 		}

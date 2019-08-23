@@ -5,8 +5,10 @@
 
 #include "stdafx.h"
 #include "mttask.h"
+#include "filesize.h"
+#include "getfiledata.h"
 
-bool MTTask::m_flag[2];
+//bool MTTask::m_flag[2];
 
 //-------------------------------------------------------------------------------------------------
 MTTask::MTTask(const std::string& sRootDir, const std::string& dbname )
@@ -18,8 +20,8 @@ MTTask::MTTask(const std::string& sRootDir, const std::string& dbname )
 	,m_gen(NULL)
 	,m_out(NULL)
 {
-	m_flag[0] = true;
-	m_flag[1] = true;
+	//m_flag[0] = true;
+	//m_flag[1] = true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -52,8 +54,8 @@ void MTTask::walkRoot(const std::string& root, boost::lockfree::queue<char*, boo
 //-------------------------------------------------------------------------------------------------
 void MTTask::md5Calc(boost::lockfree::queue<char*, boost::lockfree::fixed_sized<false> >* pInQueue, boost::lockfree::queue<MidVal*, boost::lockfree::fixed_sized<false> >* pMd5Queue)
 {
-	while (m_flag[0])
-	{
+	//while (m_flag[0])
+	//{
 		while (!pInQueue->empty())
 		{
 			char *pName = 0;
@@ -62,27 +64,24 @@ void MTTask::md5Calc(boost::lockfree::queue<char*, boost::lockfree::fixed_sized<
 			{
 				if (pName)
 				{
-					std::streampos fdatalen = filesize(pName);
+					unsigned long long fdatalen = FileSize(pName);
+
 					if (!fdatalen)
 						continue;
+
 					MidVal* pMid = new MidVal;
 					pMid->fname = pName;
 					::time(&pMid->time);
 					pMid->md5 = new unsigned char[16];
 
-					char *fdata = new char[fdatalen];
-
-					std::ifstream _in(pName, std::ios::binary);
-					while (!_in.eof()) {
-						_in.read(fdata, fdatalen);
-					}
-					_in.close();
-
+					char *pFileData = NULL;
 					unsigned char *md5raw = new unsigned char[16];
+
+					GetFileData(pName, pFileData, fdatalen);
 
 					MD5_CTX ctx;
 					MD5_Init(&ctx);
-					MD5_Update(&ctx, fdata, fdatalen);
+					MD5_Update(&ctx, pFileData, fdatalen);
 					MD5_Final(md5raw, &ctx);
 
 					std::stringstream ss;
@@ -95,7 +94,7 @@ void MTTask::md5Calc(boost::lockfree::queue<char*, boost::lockfree::fixed_sized<
 					strcpy((char*)pMid->md5, ss.str().c_str());
 
 					pMd5Queue->push(pMid);
-					delete fdata;
+					delete[] pFileData;
 				}
 			}
 			catch (std::exception& e)
@@ -104,26 +103,14 @@ void MTTask::md5Calc(boost::lockfree::queue<char*, boost::lockfree::fixed_sized<
 			}
 			//std::this_thread::sleep_for(std::chrono::milliseconds(150));
 		}
-	}
-}
-
-//-------------------------------------------------------------------------------------------------
-std::streampos MTTask::filesize(const std::string& fname)
-{
-	std::streampos fsize = 0;
-	std::ifstream file(fname, std::ios::binary);
-	fsize = file.tellg();
-	file.seekg( 0, std::ios::end );
-	fsize = file.tellg() - fsize;
-	file.close();
-	return fsize;
+	//}
 }
 
 //-------------------------------------------------------------------------------------------------
 void MTTask::writeDb( boost::lockfree::queue<MidVal*, boost::lockfree::fixed_sized<false> >* pMd5Queue)
 {
-	while (m_flag[1])
-	{
+	//while (m_flag[1])
+	//{
 		while (!pMd5Queue->empty())
 		{
 			MidVal *pVal = 0;
@@ -131,7 +118,7 @@ void MTTask::writeDb( boost::lockfree::queue<MidVal*, boost::lockfree::fixed_siz
 			std::cout << "Filename: " << pVal->fname << " MD5: " << pVal->md5 << "\r\n";
 		}
 		//std::this_thread::sleep_for(std::chrono::milliseconds(150));
-	}
+	//}
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -159,14 +146,14 @@ bool MTTask::startOutputThread()
 void MTTask::InputThreadJoin()
 {
 	m_in->join();
-	m_flag[0] = false;
+	//m_flag[0] = false;
 }
 
 //-------------------------------------------------------------------------------------------------
 void MTTask::GenerateThreadJoin()
 {
 	m_gen->join();
-	m_flag[1] = false;
+	//m_flag[1] = false;
 }
 
 //-------------------------------------------------------------------------------------------------
