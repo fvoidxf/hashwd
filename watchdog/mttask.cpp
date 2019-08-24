@@ -8,7 +8,9 @@
 #include "filesize.h"
 #include "getfiledata.h"
 
-//bool MTTask::m_flag[2];
+bool MTTask::m_flag[3] = { { true },{ true },{ true }, };
+
+#define IDLE_COUNT_LIMIT 10000000
 
 //-------------------------------------------------------------------------------------------------
 MTTask::MTTask(const std::string& sRootDir, const std::string& dbname )
@@ -20,8 +22,7 @@ MTTask::MTTask(const std::string& sRootDir, const std::string& dbname )
 	,m_gen(0)
 	,m_out(0)
 {
-	//m_flag[0] = true;
-	//m_flag[1] = true;
+
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -37,24 +38,28 @@ void MTTask::walkRoot(const std::string& root, QueueT* Queue)
 
 	recursive_directory_iterator dir(root), end;
 
-	while(dir != end)
+	while (m_flag[0])
 	{
-		const std::string sPath = dir->path().string();
-		if(!sPath.empty())
+		while (dir != end)
 		{
-			HashData *pData = new HashData;
-			pData->filename = sPath;
-			Queue->push(pData);
+			const std::string sPath = dir->path().string();
+			if (!sPath.empty())
+			{
+				HashData *pData = new HashData;
+				pData->filename = sPath;
+				Queue->push(pData);
+			}
+			dir++;
 		}
-		dir++;
 	}
+	m_flag[1] = false;
 }
 
 //-------------------------------------------------------------------------------------------------
 void MTTask::md5Calc(QueueT* Queue, QueueT* pMd5Queue)
 {
-	//while (m_flag[0])
-	//{
+	while (m_flag[1])
+	{
 		while ( !Queue->empty() )
 		{
 			HashData *pInData = 0;
@@ -105,23 +110,30 @@ void MTTask::md5Calc(QueueT* Queue, QueueT* pMd5Queue)
 			}
 			//std::this_thread::sleep_for(std::chrono::milliseconds(150));
 		}
-	//}
+	}
+	m_flag[2] = false;
 }
 
 //-------------------------------------------------------------------------------------------------
 void MTTask::writeDb(QueueT* pMd5Queue)
 {
-	//while (m_flag[1])
-	//{
+	unsigned long long idle_cnt = 0;
+	while (m_flag[2])
+	{
 		while (!pMd5Queue->empty())
 		{
+			idle_cnt = 0;
 			HashData *pData = NULL;
 			pMd5Queue->pop(pData);
 			std::cout << "Filename: " << pData->filename << " MD5: " << pData->md5 << "\r\n";
 			delete pData;
+			continue;
 		}
+		++idle_cnt;
+		if (idle_cnt > IDLE_COUNT_LIMIT)
+			m_flag[0] = false;
 		//std::this_thread::sleep_for(std::chrono::milliseconds(150));
-	//}
+	}
 }
 
 //-------------------------------------------------------------------------------------------------

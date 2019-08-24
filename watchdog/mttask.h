@@ -41,7 +41,7 @@ protected:
 	std::string									m_dbname;
 
 	boost::shared_ptr< std::thread >			m_in,m_gen,m_out;
-	//static bool																				m_flag[2];
+	static bool																				m_flag[3];
 
 public:
 	static void walkRoot(const std::string& root, QueueT* Queue);
