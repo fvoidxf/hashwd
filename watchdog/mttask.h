@@ -9,18 +9,20 @@
 	#define DB_SOURCE "watchdog.db"
 #endif
 
-class MidVal
-{
-public:
-	char *fname;
-	unsigned char *md5;
-	time_t time;
-};
-
 //=============================================================================================
 class MTTask
 {
 public:
+	class HashData
+	{
+	public:
+		time_t time;
+		std::string filename;
+		std::string md5;
+	};
+
+	typedef boost::lockfree::queue< HashData*, boost::lockfree::fixed_sized<false> > QueueT;
+
 	MTTask(const std::string& sRootDir, const std::string& dbname = DB_SOURCE);
 	virtual ~MTTask();
 
@@ -33,19 +35,18 @@ public:
 	void OutputThreadJoin();
 
 protected:
-	boost::lockfree::queue<char*, boost::lockfree::fixed_sized<false> >						m_inputFileList;
-	boost::lockfree::queue<MidVal*, boost::lockfree::fixed_sized<false> >					m_md5List;
+	QueueT										m_qIn, m_qMd5;
 
-	std::string																				m_root;
-	std::string																				m_dbname;
+	std::string									m_root;
+	std::string									m_dbname;
 
-	boost::shared_ptr< std::thread >														m_in,m_gen,m_out;
+	boost::shared_ptr< std::thread >			m_in,m_gen,m_out;
 	//static bool																				m_flag[2];
 
 public:
-	static void walkRoot(const std::string& root, boost::lockfree::queue<char*, boost::lockfree::fixed_sized<false> >* pQueue);
-	static void md5Calc(boost::lockfree::queue<char*, boost::lockfree::fixed_sized<false> >* pInQueue, boost::lockfree::queue<MidVal*, boost::lockfree::fixed_sized<false> >* pMd5Queue);
-	static void writeDb( boost::lockfree::queue<MidVal*, boost::lockfree::fixed_sized<false> >* pMd5Queue);
+	static void walkRoot(const std::string& root, QueueT* Queue);
+	static void md5Calc(QueueT* Queue, QueueT* pMd5Queue);
+	static void writeDb(QueueT* pMd5Queue);
 };
 
 //=============================================================================================

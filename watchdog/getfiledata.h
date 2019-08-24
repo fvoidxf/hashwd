@@ -5,4 +5,4 @@
 
 #pragma once
 
-bool GetFileData(const std::string& filename, char *& pData, unsigned long long filesize);
+bool GetFileData(const std::string& filename, boost::shared_array<char>& data, unsigned long long filesize);

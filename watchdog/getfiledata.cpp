@@ -8,14 +8,14 @@
 #include <Windows.h>
 
 //-------------------------------------------------------------------------------------------------
-bool GetFileData(const std::string& filename, char *& pData, unsigned long long filesize)
+bool GetFileData(const std::string& filename, boost::shared_array<char>& data, unsigned long long filesize)
 {
 	HANDLE hFile = INVALID_HANDLE_VALUE;
 
 	if (filesize == 0)
 		return false;
 
-	if (pData)
+	if (data.get())
 		return false;
 
 	if (filename.empty())
@@ -27,7 +27,7 @@ bool GetFileData(const std::string& filename, char *& pData, unsigned long long 
 
 	try
 	{
-		pData = new char[filesize];
+		data.reset(new char[filesize]);
 	}
 	catch (std::bad_alloc& e)
 	{
@@ -36,10 +36,9 @@ bool GetFileData(const std::string& filename, char *& pData, unsigned long long 
 		return false;
 	}
 	DWORD rd = 0;
-	BOOL bRes = ReadFile(hFile, pData, filesize, &rd, NULL);
+	BOOL bRes = ReadFile(hFile, data.get(), filesize, &rd, NULL);
 	if (!bRes || (rd < filesize))
 	{
-		delete[] pData;
 		CloseHandle(hFile);
 		return false;
 	}

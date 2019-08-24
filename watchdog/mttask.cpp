@@ -14,11 +14,11 @@
 MTTask::MTTask(const std::string& sRootDir, const std::string& dbname )
 	:m_root(sRootDir)
 	,m_dbname(dbname)
-	,m_inputFileList(0)
-	,m_md5List(0)
-	,m_in(NULL)
-	,m_gen(NULL)
-	,m_out(NULL)
+	,m_qIn(0)
+	,m_qMd5(0)
+	,m_in(0)
+	,m_gen(0)
+	,m_out(0)
 {
 	//m_flag[0] = true;
 	//m_flag[1] = true;
@@ -31,7 +31,7 @@ MTTask::~MTTask()
 }
 
 //-------------------------------------------------------------------------------------------------
-void MTTask::walkRoot(const std::string& root, boost::lockfree::queue<char*, boost::lockfree::fixed_sized<false> >* pQueue)
+void MTTask::walkRoot(const std::string& root, QueueT* Queue)
 {
 	using namespace boost::filesystem;
 
@@ -42,59 +42,61 @@ void MTTask::walkRoot(const std::string& root, boost::lockfree::queue<char*, boo
 		const std::string sPath = dir->path().string();
 		if(!sPath.empty())
 		{
-			char *buf = new char[sPath.size() + 1];
-			buf[sPath.size()] = '\0';
-			memcpy(buf,sPath.c_str(),sPath.size());
-			pQueue->push(buf);
+			HashData *pData = new HashData;
+			pData->filename = sPath;
+			Queue->push(pData);
 		}
 		dir++;
 	}
 }
 
 //-------------------------------------------------------------------------------------------------
-void MTTask::md5Calc(boost::lockfree::queue<char*, boost::lockfree::fixed_sized<false> >* pInQueue, boost::lockfree::queue<MidVal*, boost::lockfree::fixed_sized<false> >* pMd5Queue)
+void MTTask::md5Calc(QueueT* Queue, QueueT* pMd5Queue)
 {
 	//while (m_flag[0])
 	//{
-		while (!pInQueue->empty())
+		while ( !Queue->empty() )
 		{
-			char *pName = 0;
-			pInQueue->pop(pName);
+			HashData *pInData = 0;
+
+			Queue->pop(pInData);
 			try
 			{
-				if (pName)
+				if (!pInData->filename.empty())
 				{
-					unsigned long long fdatalen = FileSize(pName);
+					unsigned long long fdatalen = FileSize(pInData->filename);
 
 					if (!fdatalen)
 						continue;
 
-					MidVal* pMid = new MidVal;
-					pMid->fname = pName;
-					::time(&pMid->time);
-					pMid->md5 = new unsigned char[16];
+					HashData *pOutElem = new HashData;
+					pOutElem->filename = pInData->filename;
+					::time(&pOutElem->time);
 
-					char *pFileData = NULL;
-					unsigned char *md5raw = new unsigned char[16];
+					boost::shared_array<char> FileData;
 
-					GetFileData(pName, pFileData, fdatalen);
+					if (!GetFileData(pOutElem->filename, FileData, fdatalen))
+					{
+						delete pOutElem;
+						continue;
+					}
 
+					unsigned char md5[16];
 					MD5_CTX ctx;
 					MD5_Init(&ctx);
-					MD5_Update(&ctx, pFileData, fdatalen);
-					MD5_Final(md5raw, &ctx);
+					MD5_Update(&ctx, FileData.get(), fdatalen);
+					MD5_Final(md5, &ctx);
 
 					std::stringstream ss;
 
 					for (int i = 0; i < 16; i++)
-					{
-						ss << std::hex << std::setfill('0') << std::setw(2) << (int)md5raw[i];
-					}
+						ss << std::hex << std::setfill('0') << std::setw(2) << (int)md5[i];
 
-					strcpy((char*)pMid->md5, ss.str().c_str());
+					const std::string strMD5 = ss.str();
+					pOutElem->md5 = strMD5;
 
-					pMd5Queue->push(pMid);
-					delete[] pFileData;
+					pMd5Queue->push(pOutElem);
+					delete pInData;
 				}
 			}
 			catch (std::exception& e)
@@ -107,15 +109,16 @@ void MTTask::md5Calc(boost::lockfree::queue<char*, boost::lockfree::fixed_sized<
 }
 
 //-------------------------------------------------------------------------------------------------
-void MTTask::writeDb( boost::lockfree::queue<MidVal*, boost::lockfree::fixed_sized<false> >* pMd5Queue)
+void MTTask::writeDb(QueueT* pMd5Queue)
 {
 	//while (m_flag[1])
 	//{
 		while (!pMd5Queue->empty())
 		{
-			MidVal *pVal = 0;
-			pMd5Queue->pop(pVal);
-			std::cout << "Filename: " << pVal->fname << " MD5: " << pVal->md5 << "\r\n";
+			HashData *pData = NULL;
+			pMd5Queue->pop(pData);
+			std::cout << "Filename: " << pData->filename << " MD5: " << pData->md5 << "\r\n";
+			delete pData;
 		}
 		//std::this_thread::sleep_for(std::chrono::milliseconds(150));
 	//}
@@ -124,28 +127,28 @@ void MTTask::writeDb( boost::lockfree::queue<MidVal*, boost::lockfree::fixed_siz
 //-------------------------------------------------------------------------------------------------
 bool MTTask::startInputThread()
 {
-	m_in.reset( new std::thread(&MTTask::walkRoot, m_root, &m_inputFileList) );
+	m_in.reset( new std::thread(&MTTask::walkRoot, m_root, &m_qIn) );
 	return m_in.get() != NULL;
 }
 
 //-------------------------------------------------------------------------------------------------
 bool MTTask::startGenerateThread()
 {
-	m_gen.reset( new std::thread(&MTTask::md5Calc, &m_inputFileList, &m_md5List) );
+	m_gen.reset( new std::thread(&MTTask::md5Calc, &m_qIn, &m_qMd5) );
 	return m_gen.get() != NULL;
 }
 
 //-------------------------------------------------------------------------------------------------
 bool MTTask::startOutputThread()
 {
-	m_out.reset( new std::thread( &MTTask::writeDb, &m_md5List ) );
+	m_out.reset( new std::thread( &MTTask::writeDb, &m_qMd5 ) );
 	return m_out.get() != NULL;
 }
 
 //-------------------------------------------------------------------------------------------------
 void MTTask::InputThreadJoin()
 {
-	m_in->join();
+	 m_in->join();
 	//m_flag[0] = false;
 }
 
