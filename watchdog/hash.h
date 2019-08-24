@@ -21,7 +21,7 @@ public:
 	IHash();
 	virtual ~IHash(){ }
 
-	virtual bool init();
+	virtual bool init() = 0;
 	virtual bool update(boost::shared_array<char>& data, unsigned long long size) = 0;
 	virtual bool finalize() = 0;
 
@@ -37,6 +37,7 @@ protected:
 
 	virtual bool init_spec() = 0;
 	virtual bool init_raw() = 0;
+	virtual unsigned int hash_len()const = 0;
 };
 
 //=================================================================================================
@@ -46,12 +47,14 @@ public:
 	Md5Hash();
 	~Md5Hash();
 
+	virtual bool init() override;
 	virtual bool update(boost::shared_array<char>& data, unsigned long long size) override;
 	virtual bool finalize() override;
 
 protected:
 	virtual bool init_spec()override;
 	virtual bool init_raw()override;
+	virtual unsigned int hash_len()const override;
 };
 
 //=================================================================================================
@@ -64,8 +67,10 @@ public:
 protected:
 	virtual bool init_spec()override;
 	virtual bool init_raw()override;
+	virtual unsigned int hash_len()const override;
 
 public:
+	virtual bool init() override;
 	virtual bool update(boost::shared_array<char>& data, unsigned long long size) override;
 	virtual bool finalize() override;
 };
@@ -80,8 +85,10 @@ public:
 protected:
 	virtual bool init_spec()override;
 	virtual bool init_raw()override;
+	virtual unsigned int hash_len()const override;
 
 public:
+	virtual bool init() override;
 	virtual bool update(boost::shared_array<char>& data, unsigned long long size) override;
 	virtual bool finalize() override;
 };
@@ -96,8 +103,10 @@ public:
 protected:
 	virtual bool init_spec()override;
 	virtual bool init_raw()override;
+	virtual unsigned int hash_len()const override;
 
 public:
+	virtual bool init() override;
 	virtual bool update(boost::shared_array<char>& data, unsigned long long size) override;
 	virtual bool finalize() override;
 };

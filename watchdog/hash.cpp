@@ -9,6 +9,18 @@
 	#define MD5_RAW_SZ 16
 #endif
 
+#ifndef SHA256_RAW_SZ
+	#define SHA256_RAW_SZ 32
+#endif
+
+#ifndef SHA384_RAW_SZ
+	#define SHA384_RAW_SZ 48
+#endif
+
+#ifndef SHA512_RAW_SZ 
+	#define SHA512_RAW_SZ 64
+#endif
+
 //-------------------------------------------------------------------------------------------------
 IHash* IHash::create(IHash::HashType type)
 {
@@ -32,7 +44,7 @@ std::string IHash::string(bool bRegen /*= false*/)const
 	if (bRegen && m_raw.get())
 	{
 		std::stringstream ss;
-		for (auto i = 0; i < MD5_RAW_SZ; i++)
+		for (auto i = 0; i < hash_len(); i++)
 			ss << std::hex << std::setfill('0') << std::setw(2) << (int)m_raw[i];
 		m_hash = ss.str();
 	}
@@ -42,7 +54,7 @@ std::string IHash::string(bool bRegen /*= false*/)const
 		if (m_raw.get())
 		{
 			std::stringstream ss;
-			for (auto i = 0; i < MD5_RAW_SZ; i++)
+			for (auto i = 0; i < hash_len(); i++)
 				ss << std::hex << std::setfill('0') << std::setw(2) << (int)m_raw[i];
 			m_hash = ss.str();
 		}
@@ -72,7 +84,7 @@ Md5Hash::~Md5Hash()
 }
 
 //-------------------------------------------------------------------------------------------------
-bool IHash::init()
+bool Md5Hash::init()
 {
 	if (!init_spec())
 		return false;
@@ -145,6 +157,12 @@ IHash::HashType IHash::typeFromStr(const std::string& name)
 }
 
 //-------------------------------------------------------------------------------------------------
+unsigned int Md5Hash::hash_len()const
+{
+	return MD5_RAW_SZ;
+}
+
+//-------------------------------------------------------------------------------------------------
 Sha256Hash::Sha256Hash()
 	:IHash()
 {
@@ -158,27 +176,65 @@ Sha256Hash::~Sha256Hash()
 }
 
 //-------------------------------------------------------------------------------------------------
+bool Sha256Hash::init()
+{
+	if (!init_spec())
+		return false;
+	return SHA256_Init(static_cast<SHA256_CTX*>(m_spec.get())) != 0;
+}
+
+//-------------------------------------------------------------------------------------------------
 bool Sha256Hash::init_spec()
 {
+	try
+	{
+		m_spec.reset(new SHA256_CTX);
+	}
+	catch (std::exception& e)
+	{
+		return false;
+	}
 	return true;
 }
 
 //-------------------------------------------------------------------------------------------------
 bool Sha256Hash::init_raw()
 {
+	try
+	{
+		m_raw.reset(new unsigned char[SHA256_RAW_SZ]);
+	}
+	catch (std::exception& e)
+	{
+		return false;
+	}
 	return true;
 }
 
 //-------------------------------------------------------------------------------------------------
 bool Sha256Hash::update(boost::shared_array<char>& data, unsigned long long size)
 {
-	return true;
+	if ((data.get() == nullptr) || (!size))
+		return false;
+	if (m_spec.get() == nullptr)
+		return false;
+	return SHA256_Update(static_cast<SHA256_CTX*>(m_spec.get()), data.get(), size) != 0;
 }
 
 //-------------------------------------------------------------------------------------------------
 bool Sha256Hash::finalize()
 {
-	return true;
+	if (m_spec.get() == nullptr)
+		return false;
+	if (!init_raw())
+		return false;
+	return SHA256_Final(m_raw.get(), static_cast<SHA256_CTX*>(m_spec.get())) != 0;
+}
+
+//-------------------------------------------------------------------------------------------------
+unsigned int Sha256Hash::hash_len()const
+{
+	return SHA256_RAW_SZ;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -195,27 +251,59 @@ Sha384Hash::~Sha384Hash()
 }
 
 //-------------------------------------------------------------------------------------------------
+bool Sha384Hash::init()
+{
+	if (!init_spec())
+		return false;
+	return SHA384_Init(static_cast<SHA512_CTX*>(m_spec.get())) != 0;
+}
+
+//-------------------------------------------------------------------------------------------------
 bool Sha384Hash::init_spec()
 {
+	try
+	{
+		m_spec.reset(new SHA512_CTX);
+	}
+	catch (std::exception& e)
+	{
+		return false;
+	}
 	return true;
 }
 
 //-------------------------------------------------------------------------------------------------
 bool Sha384Hash::init_raw()
 {
+	try
+	{
+		m_raw.reset(new unsigned char[SHA384_RAW_SZ]);
+	}
+	catch (std::exception& e)
+	{
+		return false;
+	}
 	return true;
 }
 
 //-------------------------------------------------------------------------------------------------
 bool Sha384Hash::update(boost::shared_array<char>& data, unsigned long long size)
 {
-	return true;
+	if ((data.get() == nullptr) || (!size))
+		return false;
+	if (m_spec.get() == nullptr)
+		return false;
+	return SHA384_Update(static_cast<SHA512_CTX*>(m_spec.get()), data.get(), size) != 0;
 }
 
 //-------------------------------------------------------------------------------------------------
 bool Sha384Hash::finalize()
 {
-	return true;
+	if (m_spec.get() == nullptr)
+		return false;
+	if (!init_raw())
+		return false;
+	return SHA384_Final(m_raw.get(), static_cast<SHA512_CTX*>(m_spec.get())) != 0;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -226,33 +314,77 @@ Sha512Hash::Sha512Hash()
 }
 
 //-------------------------------------------------------------------------------------------------
+unsigned int Sha384Hash::hash_len()const
+{
+	return SHA384_RAW_SZ;
+}
+
+//-------------------------------------------------------------------------------------------------
 Sha512Hash::~Sha512Hash()
 {
 
 }
 
 //-------------------------------------------------------------------------------------------------
+bool Sha512Hash::init()
+{
+	if (!init_spec())
+		return false;
+	return SHA512_Init(static_cast<SHA512_CTX*>(m_spec.get())) != 0;
+}
+
+//-------------------------------------------------------------------------------------------------
 bool Sha512Hash::init_spec()
 {
+	try
+	{
+		m_spec.reset(new SHA512_CTX);
+	}
+	catch (std::exception& e)
+	{
+		return false;
+	}
 	return true;
 }
 
 //-------------------------------------------------------------------------------------------------
 bool Sha512Hash::init_raw()
 {
+	try
+	{
+		m_raw.reset(new unsigned char[SHA512_RAW_SZ]);
+	}
+	catch (std::exception& e)
+	{
+		return false;
+	}
 	return true;
 }
 
 //-------------------------------------------------------------------------------------------------
 bool Sha512Hash::update(boost::shared_array<char>& data, unsigned long long size)
 {
-	return true;
+	if ((data.get() == nullptr) || (!size))
+		return false;
+	if (m_spec.get() == nullptr)
+		return false;
+	return SHA512_Update(static_cast<SHA512_CTX*>(m_spec.get()), data.get(), size) != 0;
 }
 
 //-------------------------------------------------------------------------------------------------
 bool Sha512Hash::finalize()
 {
-	return true;
+	if (m_spec.get() == nullptr)
+		return false;
+	if (!init_raw())
+		return false;
+	return SHA512_Final(m_raw.get(), static_cast<SHA512_CTX*>(m_spec.get())) != 0;
+}
+
+//-------------------------------------------------------------------------------------------------
+unsigned int Sha512Hash::hash_len()const
+{
+	return SHA512_RAW_SZ;
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -12,7 +12,8 @@
 #include <algorithm>
 #include <iomanip>
 #include <sstream>
-#include <Openssl/md5.h>
+#include <openssl/md5.h>
+#include <openssl/sha.h>
 #include <fstream>
 #include <thread>
 #include <chrono>
