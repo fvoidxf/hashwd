@@ -1,5 +1,10 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+/*
+* created by fv01dxf@gmail.com
+* FreeBSD License 2019
+*/
+
+#ifndef __MAINWINDOW_H__
+#define __MAINWINDOW_H__
 
 #include <QMainWindow>
 
@@ -19,4 +24,4 @@ private:
     Ui::MainWindow *ui;
 };
 
-#endif // MAINWINDOW_H
+#endif // __MAINWINDOW_H__
