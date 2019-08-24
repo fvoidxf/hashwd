@@ -4,19 +4,20 @@
 */
 
 #include "stdafx.h"
-#include "mttask.h"
+#include "hash.h"
 #include "filesize.h"
 #include "getfiledata.h"
-#include "hash.h"
+#include "mttask.h"
 
 bool MTTask::m_flag[3] = { { true },{ true },{ true }, };
 
 #define IDLE_COUNT_LIMIT 10000000
 
 //-------------------------------------------------------------------------------------------------
-MTTask::MTTask(const std::string& sRootDir, const std::string& dbname )
+MTTask::MTTask(const std::string& sRootDir, IHash::HashType hashType , const std::string& dbname)
 	:m_root(sRootDir)
 	,m_dbname(dbname)
+	,m_hashType(hashType)
 	,m_qIn(0)
 	,m_qMd5(0)
 	,m_in(0)
@@ -57,7 +58,7 @@ void MTTask::walkRoot(const std::string& root, QueueT* Queue)
 }
 
 //-------------------------------------------------------------------------------------------------
-void MTTask::md5Calc(QueueT* Queue, QueueT* pMd5Queue)
+void MTTask::md5Calc(QueueT* Queue, QueueT* pMd5Queue, IHash::HashType hashType)
 {
 	while (m_flag[1])
 	{
@@ -87,12 +88,12 @@ void MTTask::md5Calc(QueueT* Queue, QueueT* pMd5Queue)
 						continue;
 					}
 
-					boost::shared_ptr< IHash > pHash(new Md5Hash);
+					boost::shared_ptr< IHash > pHash( IHash::create(hashType) );
 					pHash->init();
 					pHash->update(FileData, fdatalen);
 					pHash->finalize();
 
-					pOutElem->md5 = pHash->string();
+					pOutElem->data = pHash->string();
 
 					pMd5Queue->push(pOutElem);
 					delete pInData;
@@ -119,7 +120,7 @@ void MTTask::writeDb(QueueT* pMd5Queue)
 			idle_cnt = 0;
 			HashData *pData = NULL;
 			pMd5Queue->pop(pData);
-			std::cout << "Filename: " << pData->filename << " MD5: " << pData->md5 << "\r\n";
+			std::cout << "Filename: " << pData->filename << " Hash: " << pData->data << "\r\n";
 			delete pData;
 			continue;
 		}
@@ -140,7 +141,7 @@ bool MTTask::startInputThread()
 //-------------------------------------------------------------------------------------------------
 bool MTTask::startGenerateThread()
 {
-	m_gen.reset( new std::thread(&MTTask::md5Calc, &m_qIn, &m_qMd5) );
+	m_gen.reset( new std::thread(&MTTask::md5Calc, &m_qIn, &m_qMd5, m_hashType) );
 	return m_gen.get() != NULL;
 }
 

@@ -9,6 +9,15 @@
 class IHash
 {
 public:
+	enum HashType
+	{
+		Undef = 0,
+		md5,
+		sha256,
+		sha384,
+		sha512,
+	};
+
 	IHash();
 	virtual ~IHash(){ }
 
@@ -17,6 +26,9 @@ public:
 	virtual bool finalize() = 0;
 
 	virtual std::string string(bool bRegen = false)const;
+
+	static HashType typeFromStr(const std::string& name);
+	static IHash* create(HashType type);
 
 protected:
 	boost::shared_ptr<void>				m_spec;
@@ -43,5 +55,51 @@ protected:
 };
 
 //=================================================================================================
+class Sha256Hash : public IHash
+{
+public:
+	Sha256Hash();
+	~Sha256Hash();
+
+protected:
+	virtual bool init_spec()override;
+	virtual bool init_raw()override;
+
+public:
+	virtual bool update(boost::shared_array<char>& data, unsigned long long size) override;
+	virtual bool finalize() override;
+};
+
+//=================================================================================================
+class Sha384Hash : public IHash
+{
+public:
+	Sha384Hash();
+	~Sha384Hash();
+
+protected:
+	virtual bool init_spec()override;
+	virtual bool init_raw()override;
+
+public:
+	virtual bool update(boost::shared_array<char>& data, unsigned long long size) override;
+	virtual bool finalize() override;
+};
+
+//=================================================================================================
+class Sha512Hash : public IHash
+{
+public:
+	Sha512Hash();
+	~Sha512Hash();
+
+protected:
+	virtual bool init_spec()override;
+	virtual bool init_raw()override;
+
+public:
+	virtual bool update(boost::shared_array<char>& data, unsigned long long size) override;
+	virtual bool finalize() override;
+};
 
 //=================================================================================================
