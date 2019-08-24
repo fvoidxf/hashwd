@@ -5,10 +5,9 @@
 
 #include "stdafx.h"
 #include "filedata.h"
+#include "hash.h"
 
 #pragma warning( disable: 4244 )
-
-std::string __stdcall md5_buff(boost::shared_array<unsigned char>& data, size_t size);
 
 //-------------------------------------------------------------------------------------------------
 FileData::FileData()
@@ -56,17 +55,20 @@ std::string FileData::make_md5()
 	if(!fileSize)
 		return md5str;
 
-	boost::shared_array<unsigned char> pArr(new unsigned char[fileSize]);
+	boost::shared_array<char> pArr(new char[fileSize]);
 
 	while(!_in.eof()){
-		_in.read( reinterpret_cast<char*>( pArr.get() ), fileSize);
+		_in.read(  pArr.get(), fileSize);
 	}
 
 	_in.close();
 
-	md5str = md5_buff(pArr, fileSize);
+	boost::shared_ptr<IHash> pHash(new Md5Hash);
+	pHash->init();
+	pHash->update(pArr, fileSize);
+	pHash->finalize();
 
-	m_md5 = md5str;
+	m_md5 = pHash->string();
 
 	return md5str;
 }

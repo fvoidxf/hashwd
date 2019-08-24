@@ -7,6 +7,7 @@
 #include "mttask.h"
 #include "filesize.h"
 #include "getfiledata.h"
+#include "hash.h"
 
 bool MTTask::m_flag[3] = { { true },{ true },{ true }, };
 
@@ -86,19 +87,12 @@ void MTTask::md5Calc(QueueT* Queue, QueueT* pMd5Queue)
 						continue;
 					}
 
-					unsigned char md5[16];
-					MD5_CTX ctx;
-					MD5_Init(&ctx);
-					MD5_Update(&ctx, FileData.get(), fdatalen);
-					MD5_Final(md5, &ctx);
+					boost::shared_ptr< IHash > pHash(new Md5Hash);
+					pHash->init();
+					pHash->update(FileData, fdatalen);
+					pHash->finalize();
 
-					std::stringstream ss;
-
-					for (int i = 0; i < 16; i++)
-						ss << std::hex << std::setfill('0') << std::setw(2) << (int)md5[i];
-
-					const std::string strMD5 = ss.str();
-					pOutElem->md5 = strMD5;
+					pOutElem->md5 = pHash->string();
 
 					pMd5Queue->push(pOutElem);
 					delete pInData;

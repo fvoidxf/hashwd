@@ -76,7 +76,7 @@ void FDContainer::check_files()
 		{
 			try
 			{
-					fd->make_md5();
+				fd->make_md5();
 			}
 			catch(std::exception &e)
 			{

@@ -13,9 +13,10 @@
 
 void usage(char *program)
 {
-	std::cout << "usage: " << program << "-s SESSION_NAME -d DIRECTORY" << std::endl;
+	std::cout << "usage: " << program << "[-vph] -c md5 -s SESSION_NAME -d DIRECTORY" << std::endl;
 	std::cout << "example: " << program << " -s Session1 -d C:\\temp" << std::endl;
 	std::cout << "options: -v verbose output, -h help, -p parallel Execution" << std::endl;
+	std::cout << "-c hash alghorytm, available md5, sha256, sha512" << std::endl;
 }
 
 int main(int argc, char *argv[])
