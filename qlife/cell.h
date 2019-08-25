@@ -1,10 +1,24 @@
-#ifndef CELL_H
-#define CELL_H
+/*
+* created by fv01dxf@gmail.com
+* FreeBSD License 2019
+*/
 
+#ifndef __CELL_H__
+#define __CELL_H__
+
+class QGraphicsItem;
+class Field;
+
+//=================================================================================================
 class Cell
 {
+    friend class Field;
 protected:
     int w,h;
+    int i,j;
+    QGraphicsItem *item;
+
+    void assign(QGraphicsItem* pItem, int _i, int _j);
 
 public:
     Cell(int width, int height);
@@ -14,4 +28,6 @@ public:
     int height()const;
 };
 
-#endif // CELL_H
+//=================================================================================================
+
+#endif // __CELL_H__

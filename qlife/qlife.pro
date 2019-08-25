@@ -26,12 +26,14 @@ CONFIG += c++11
 
 SOURCES += \
         cell.cpp \
+        dynmodel.cpp \
         field.cpp \
         main.cpp \
         mainwindow.cpp
 
 HEADERS += \
         cell.h \
+        dynmodel.h \
         field.h \
         mainwindow.h
 

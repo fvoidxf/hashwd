@@ -1,6 +1,15 @@
+/*
+* created by fv01dxf@gmail.com
+* FreeBSD License 2019
+*/
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "field.h"
+#include "dynmodel.h"
+
+#define FIELD_N 20
+#define FIELD_M 20
 
 MainWindow::MainWindow(QWidget *parent)
     :QMainWindow(parent)
@@ -15,13 +24,40 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void init_scenario_01(DynModel& model)
+{
+    model(0,0) = 1;
+    model(0,1) = 1;
+    model(0,2) = 1;
+
+    model(1,0) = 1;
+    model(1,2) = 1;
+    model(1,3) = 1;
+
+    model(2,1) = 1;
+    model(2,2) = 1;
+    model(3,2) = 1;
+}
+
 bool MainWindow::init()
 {
     scene = new QGraphicsScene(this);
     ui->graphicsView->setScene(scene);
-    field.reset(new Field(20, 20));
+    field.reset(new Field(FIELD_N, FIELD_M));
     field->setScene(scene);
-    field->draw();
-    field->addCell(2,2);
+    field->setBackgroundColor(QColor(255,0,0));
+    field->setCellColor(QColor(0,255,128));
+    field->setBorderColor(Qt::yellow);
+    field->setBackgroundColor(Qt::green);
+    field->setCellColor(Qt::blue);
+    field->update();
+
+    DynModel *pM = new DynModel(FIELD_N,FIELD_M);
+    pM->allocate();
+    pM->clear();
+    init_scenario_01(*pM);
+    pM->free();
+    delete pM;
+
     return true;
 }
