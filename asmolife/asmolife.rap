@@ -60,8 +60,9 @@ Group=Added files,Assembly,Resources,Misc,Modules
 
 [Size]
 4=0,0,0,0
-2=0,0,0,0,0
-1=0,0,0,0,971
+2=0,0,0,0,113
+1=0,0,0,0,1859
+3=0,0,0,0,0
 
 [VersionControl]
 Settings=1246
@@ -134,3 +135,5 @@ ProductVer4Range=0
 Options=52
 [Collapse]
 1=
+2=
+3=
