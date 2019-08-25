@@ -14,6 +14,8 @@ class QGraphicsItem;
 class QSize;
 class Cell;
 
+class DynModel;
+
 //=================================================================================================
 class Field
 {
@@ -36,16 +38,15 @@ public:
     QSize fieldSize()const;
     QSize cellSize()const;
 
+    virtual void fromModel(DynModel& model);
     virtual bool addCell(int i, int j);
-    virtual bool isAlive(int i, int j)const;
-    virtual bool removeCell(int i, int j);
+    virtual void clearCells();
 
     void setBackgroundColor(QColor color);
     void setCellColor(QColor color);
     void setBorderColor(QColor color);
 
     virtual bool update();
-    virtual bool run();
 
 protected:
     virtual bool createBorders();

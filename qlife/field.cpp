@@ -9,6 +9,7 @@
 #include <QLine>
 #include "cell.h"
 #include "field.h"
+#include "dynmodel.h"
 
 #define M_H 238
 #define M_W 380
@@ -142,21 +143,26 @@ bool Field::update()
 }
 
 //-------------------------------------------------------------------------------------------------
-bool Field::run()
+void Field::clearCells()
 {
-    return true;
+    for(Cell* c: cells){
+        scene->removeItem(c->item);
+        delete c;
+    }
+    cells.clear();
 }
 
 //-------------------------------------------------------------------------------------------------
-bool Field::isAlive(int i, int j)const
+void Field::fromModel(DynModel &model)
 {
-    return true;
-}
-
-//-------------------------------------------------------------------------------------------------
-bool Field::removeCell(int i, int j)
-{
-    return true;
+    for(auto i = 0; i < w; i++)
+    {
+        for(auto j = 0; j < h; j++)
+        {
+            if(model(i,j) == 1)
+                addCell(i,j);
+        }
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
