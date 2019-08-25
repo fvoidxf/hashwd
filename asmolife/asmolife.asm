@@ -1,4 +1,4 @@
-.386
+.686
 .model flat, stdcall  ;32 bit memory model
 option casemap :none  ;case sensitive
 
@@ -64,28 +64,29 @@ LOCAL xPos:Word,yPos:Word
 	invoke CreatePen,PS_SOLID,1, 03333FFh
 	mov oldPen,eax	
 	invoke SelectObject,cDC,oldPen
-	mov Step,1
-	.while (Step < 601) 
-	invoke MoveToEx,cDC,300,200,NULL
-	invoke LineTo,cDC,Step,0
-	invoke MoveToEx,cDC,300,200,NULL
-	invoke LineTo,cDC,Step,399
-	add Step,5
-	.ENDW
-	mov Step,1
-	.while (Step < 401) 
-	invoke MoveToEx,cDC,300,200,NULL
-	invoke LineTo,cDC,0,Step
-	invoke MoveToEx,cDC,300,200,NULL
-	invoke LineTo,cDC,599,Step
-	add Step,5
-	.ENDW
+	;mov Step,1
+	;while (Step < 2) 
+	;invoke MoveToEx,cDC,300,200,NULL
+	;invoke LineTo,cDC,Step,0
+	;invoke MoveToEx,cDC,300,200,NULL
+	;invoke LineTo,cDC,Step,399
+	;add Step,5
+	;.ENDW
+	;mov Step,1
+	;.while (Step < 2) 
+	;invoke MoveToEx,cDC,300,200,NULL
+	;invoke LineTo,cDC,0,Step
+	;invoke MoveToEx,cDC,300,200,NULL
+	;invoke LineTo,cDC,599,Step
+	;add Step,5
+	;.ENDW
+	invoke SetPixel,cDC,1,1,0
 	invoke SetBkMode,cDC,TRANSPARENT
 	mov Rectingle.left,250
 	mov Rectingle.top,180
 	mov Rectingle.right,350
 	mov Rectingle.bottom,250
-	invoke DrawText,cDC,addr TEXT,-1,addr Rectingle,(DT_CENTER or DT_VCENTER)   
+	;invoke DrawText,cDC,addr TEXT,-1,addr Rectingle,(DT_CENTER or DT_VCENTER)   
 	
 	;Restore seting DC and Delete
 	invoke SelectObject,cDC,oldBMP

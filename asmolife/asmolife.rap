@@ -123,12 +123,13 @@ ProductVer4Range=0
 0=
 
 [Find]
-1="Posun"
-2="rozloha"
-3="Stetec"
-4="Stetec2"
-5="Pero"
-6="Pero2"
+1="SetPixel"
+2="Posun"
+3="rozloha"
+4="Stetec"
+5="Stetec2"
+6="Pero"
+7="Pero2"
 [Version-Inc]
 Options=52
 [Collapse]
