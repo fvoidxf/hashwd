@@ -14,7 +14,7 @@
 #endif
 
 #ifndef THREAD_TM
-    #define THREAD_TM 260
+    #define THREAD_TM 300
 #endif
 
 //-------------------------------------------------------------------------------------------------
@@ -22,10 +22,15 @@ FieldThread::FieldThread(QSharedPointer<Field> pField, QObject *parent)
     :QThread(parent)
     ,field(pField)
     ,model(new DynModel(FIELD_N,FIELD_M))
+    ,isRunning(true)
 {
+    time_t t;
+    time(&t);
+    srand( t );
+
     model->allocate();
     model->clear();
-    modelInit();
+    randomModel(FIELD_N/4, FIELD_M/5);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -35,9 +40,39 @@ FieldThread::~FieldThread()
 }
 
 //-------------------------------------------------------------------------------------------------
+void FieldThread::randomModel(int N, int M)
+{
+    int limN = model->N() <= N ? model->N() : N;
+    int limM = model->M() <= M ? model->M() : M;
+
+    for(auto i = 0; i < limN; i++)
+    {
+        for(auto j = 0; j < limM; j++)
+        {
+            model->item(i,j) = randomBool();
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+void FieldThread::setStopFlag()
+{
+    isRunning = false;
+}
+
+//-------------------------------------------------------------------------------------------------
+unsigned char FieldThread::randomBool()
+{
+    unsigned char c = rand();
+    unsigned char r = c % 2;
+
+    return r;
+}
+
+//-------------------------------------------------------------------------------------------------
 void FieldThread::run()
 {
-    while(true)
+    while(isRunning)
     {
         emit clearCells();
         modelStep();

@@ -7,6 +7,8 @@
 #ifndef __DYNMODEL_H__
 #define __DYNMODEL_H__
 
+#include <vld.h>
+
 //=================================================================================================
 class DynModel
 {
@@ -18,6 +20,9 @@ protected:
 public:
     DynModel(int N, int M);
     virtual ~DynModel();
+
+    int N()const{return n;}
+    int M()const{return m;}
 
     bool allocate();
     unsigned char& item(int i, int j);

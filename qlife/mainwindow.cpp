@@ -34,6 +34,8 @@ MainWindow::MainWindow(QWidget *parent)
 //-------------------------------------------------------------------------------------------------
 MainWindow::~MainWindow()
 {
+    thread->setStopFlag();
+    thread->wait();
     delete ui;
 }
 
@@ -70,8 +72,13 @@ void MainWindow::OnClearCells()
 //-------------------------------------------------------------------------------------------------
 void MainWindow::OnAddCell(int i, int j)
 {
+    _CrtMemState _memState;
+    _CrtMemCheckpoint(&_memState);
+    //_CrtDumpMemoryLeaks();
+    //Дичайшие утечки, которые дают оба метода
     field->addCell(i,j);
     field->update();
+    _CrtMemDumpAllObjectsSince(&_memState);
 }
 
 //-------------------------------------------------------------------------------------------------
