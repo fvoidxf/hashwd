@@ -11,6 +11,7 @@
 #include <QGraphicsScene>
 
 class Field;
+class FieldThread;
 
 namespace Ui {
     class MainWindow;
@@ -29,9 +30,14 @@ private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
     QSharedPointer<Field> field;
+    FieldThread *thread;
 
 public:
     bool init();
+
+public slots:
+    void OnClearCells();
+    void OnAddCell(int i, int j);
 };
 
 //=================================================================================================

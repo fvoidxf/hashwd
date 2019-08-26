@@ -28,6 +28,7 @@ SOURCES += \
         cell.cpp \
         dynmodel.cpp \
         field.cpp \
+        fieldthread.cpp \
         main.cpp \
         mainwindow.cpp
 
@@ -35,6 +36,7 @@ HEADERS += \
         cell.h \
         dynmodel.h \
         field.h \
+        fieldthread.h \
         mainwindow.h
 
 FORMS += \
