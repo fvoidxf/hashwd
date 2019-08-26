@@ -30,18 +30,26 @@ CONFIG += c++11
 
 SOURCES += \
         cell.cpp \
+        cellitem.cpp \
         dynmodel.cpp \
         field.cpp \
+        fieldscene.cpp \
         fieldthread.cpp \
+        fieldview.cpp \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+        workarea.cpp
 
 HEADERS += \
         cell.h \
+        cellitem.h \
         dynmodel.h \
         field.h \
+        fieldscene.h \
         fieldthread.h \
-        mainwindow.h
+        fieldview.h \
+        mainwindow.h \
+        workarea.h
 
 FORMS += \
         mainwindow.ui

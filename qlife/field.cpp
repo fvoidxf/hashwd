@@ -11,6 +11,8 @@
 #include "cell.h"
 #include "field.h"
 #include "dynmodel.h"
+#include "fieldscene.h"
+#include "workarea.h"
 
 #define M_H 238
 #define M_W 380
@@ -24,6 +26,7 @@ Field::Field(int width, int height)
     ,h(height)
     ,scene(nullptr)
     ,main(nullptr)
+    ,workarea(nullptr)
 {
 
 }
@@ -35,7 +38,7 @@ Field::~Field()
 }
 
 //-------------------------------------------------------------------------------------------------
-bool Field::createBorders()
+/*bool Field::createBorders()
 {
     if(!scene)
         return false;
@@ -56,10 +59,10 @@ bool Field::createBorders()
         }
     }
     return true;
-}
+}*/
 
 //-------------------------------------------------------------------------------------------------
-void Field::setScene(QGraphicsScene *s)
+void Field::setScene(FieldScene *s)
 {
     scene = s;
 }
@@ -116,7 +119,7 @@ bool Field::update()
 {
     if(!scene)
         return false;
-    if(!main)
+    /*if(!main)
     {
         QRectF rc(0, 0, fieldSize().width(), fieldSize().height());
         QBrush brush(bgcolor);
@@ -130,17 +133,17 @@ bool Field::update()
         grRect->setPen(pen);
         QBrush brush(bgcolor);
         grRect->setBrush(brush);
-    }
-    if(borders.isEmpty())
-        createBorders();
-    else
-    {
-        for(QGraphicsItem* item : borders)
-        {
-            QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
-            lineItem->setPen(QPen(bordercolor));
-        }
-    }
+    }*/
+    //if(borders.isEmpty())
+    //    createBorders();
+    //else
+    //{
+    //    for(QGraphicsItem* item : borders)
+    //    {
+    //        QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
+    //       lineItem->setPen(QPen(bordercolor));
+    //    }
+    //}
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -164,6 +167,14 @@ void Field::fromModel(DynModel &model)
                 addCell(i,j);
         }
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+bool Field::init()
+{
+    workarea = new Workarea(QRectF(0,0,300,400), 20, 20);
+    scene->addItem(workarea);
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------

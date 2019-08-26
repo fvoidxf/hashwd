@@ -13,6 +13,7 @@
 
 class Field;
 class FieldThread;
+class FieldScene;
 
 namespace Ui {
     class MainWindow;
@@ -29,7 +30,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QGraphicsScene *scene;
+    FieldScene *scene;
     QSharedPointer<Field> field;
     FieldThread *thread;
 

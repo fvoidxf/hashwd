@@ -16,25 +16,28 @@ class QSize;
 class Cell;
 
 class DynModel;
+class FieldScene;
+class Workarea;
 
 //=================================================================================================
 class Field
 {
 protected:
     int w,h;
-    QGraphicsScene *scene;
+    FieldScene *scene;
     QGraphicsItem *main;
     QColor bgcolor;
     QColor cellcolor;
     QColor bordercolor;
-    QList<QGraphicsItem*> borders;
+    Workarea* workarea;
+    //QList<QGraphicsItem*> borders;
     QList<Cell*> cells;
 
 public:
     Field(int width, int height);
     virtual ~Field();
 
-    void setScene(QGraphicsScene* s);
+    void setScene(FieldScene* s);
 
     QSize fieldSize()const;
     QSize cellSize()const;
@@ -48,9 +51,12 @@ public:
     void setBorderColor(QColor color);
 
     virtual bool update();
+    virtual bool init();
+
+    Workarea* getWorkarea(){return workarea;}
 
 protected:
-    virtual bool createBorders();
+    //virtual bool createBorders();
 };
 
 //=================================================================================================

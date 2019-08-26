@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>424</width>
-    <height>327</height>
+    <width>600</width>
+    <height>448</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>qLife 0.3.1</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QGraphicsView" name="graphicsView">
+   <widget class="FieldView" name="graphicsView">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>0</y>
+      <x>40</x>
+      <y>60</y>
       <width>411</width>
       <height>251</height>
      </rect>
@@ -30,7 +30,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>424</width>
+     <width>600</width>
      <height>21</height>
     </rect>
    </property>
@@ -46,6 +46,13 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>FieldView</class>
+   <extends>QGraphicsView</extends>
+   <header>fieldview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

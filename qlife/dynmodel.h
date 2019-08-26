@@ -7,7 +7,9 @@
 #ifndef __DYNMODEL_H__
 #define __DYNMODEL_H__
 
+#ifdef _DEBUG
 #include <vld.h>
+#endif
 
 //=================================================================================================
 class DynModel
