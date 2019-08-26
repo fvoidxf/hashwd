@@ -1,3 +1,9 @@
+/*
+* created by fv01dxf@gmail.com
+* General Public License v3 
+*         2019
+*/
+
 #ifndef GETOPT_H
 #define GETOPT_H
 
