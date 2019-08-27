@@ -13,12 +13,7 @@
 #include "dynmodel.h"
 #include "fieldscene.h"
 #include "workarea.h"
-
-#define M_H 238
-#define M_W 380
-
-#define W_STEP 20
-#define H_STEP 12
+#include "config.h"
 
 //-------------------------------------------------------------------------------------------------
 Field::Field(int width, int height)
@@ -70,13 +65,13 @@ void Field::setScene(FieldScene *s)
 //-------------------------------------------------------------------------------------------------
 QSize Field::cellSize() const
 {
-    return QSize(W_STEP, H_STEP);
+    return QSize( Config::instance()->cellWidth() , Config::instance()->cellHeight() );
 }
 
 //-------------------------------------------------------------------------------------------------
 QSize Field::fieldSize() const
 {
-    return QSize(M_W, M_H);
+    return QSize( Config::instance()->fieldWidth() , Config::instance()->fieldHeight() );
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -172,7 +167,7 @@ void Field::fromModel(DynModel &model)
 //-------------------------------------------------------------------------------------------------
 bool Field::init()
 {
-    workarea = new Workarea(QRectF(0,0,300,400), 20, 20);
+    workarea = new Workarea(QRectF(0,0, Config::instance()->fieldWidth() , Config::instance()->fieldHeight() ), Config::instance()->columns(), Config::instance()->rows() );
     scene->addItem(workarea);
     return true;
 }

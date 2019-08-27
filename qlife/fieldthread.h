@@ -17,7 +17,7 @@ class FieldThread : public QThread
     Q_OBJECT
 
 public:
-    FieldThread(QSharedPointer<Field> pField, QObject *parent = nullptr);
+    FieldThread(QObject *parent = nullptr);
     virtual ~FieldThread();
 
     void setStopFlag();
@@ -26,13 +26,12 @@ public:
     void modelInit();
     void randomModel(int N, int M);
 
-    unsigned char randomBool();
+    inline unsigned char randomBool();
 
 protected:
     virtual void run()override;
-    QSharedPointer<Field> field;
     QSharedPointer<DynModel> model;
-    bool isRunning;
+    mutable bool isRunning;
 
 signals:
     void clearCells();

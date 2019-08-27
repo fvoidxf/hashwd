@@ -11,17 +11,7 @@
 #include "dynmodel.h"
 #include "fieldscene.h"
 #include "fieldview.h"
-
-#ifndef FIELD_N
-    #define FIELD_N 20
-#endif
-
-#ifndef FIELD_M
-    #define FIELD_M 20
-#endif
-
-#define WINDOW_WIDTH	640
-#define WINDOW_HEIGHT	480
+#include "config.h"
 
 //-------------------------------------------------------------------------------------------------
 MainWindow::MainWindow(QWidget *parent)
@@ -31,19 +21,21 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 	setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
-	setFixedSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+	setFixedSize( Config::instance()->screenWidth(), Config::instance()->screenHeight() );
     setCentralWidget(ui->graphicsView);
-    field.reset(new Field(FIELD_N, FIELD_M));
-    thread = new FieldThread(field, this);
-    connect(thread, SIGNAL(clearCells()), this, SLOT(OnClearCells()));
-    connect(thread, SIGNAL(addCell(int,int)), this, SLOT(OnAddCell(int,int)));
+    //field.reset(new Field(FIELD_N, FIELD_M));
+    //thread = new FieldThread(field, this);
+    //connect(thread, SIGNAL(clearCells()), this, SLOT(OnClearCells()));
+    //connect(thread, SIGNAL(addCell(int,int)), this, SLOT(OnAddCell(int,int)));
 }
 
 //-------------------------------------------------------------------------------------------------
 MainWindow::~MainWindow()
 {
-    thread->setStopFlag();
-    thread->wait();
+	if (thread) {
+		thread->setStopFlag();
+		thread->wait();
+	}
     delete ui;
 }
 
@@ -62,10 +54,6 @@ bool MainWindow::init()
     field->setBackgroundColor(Qt::green);
     field->setCellColor(Qt::blue);
     field->update();
-
-    DynModel *pM = new DynModel(FIELD_N,FIELD_M);
-    pM->allocate();
-    pM->clear();
 
     thread->start();
 

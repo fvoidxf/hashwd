@@ -4,6 +4,7 @@
 *         2019
 */
 #include "cellitem.h"
+#include "config.h"
 
 //-------------------------------------------------------------------------------------------------
 CellItem::CellItem(int i, int j, QGraphicsItem* parent)
@@ -23,7 +24,7 @@ CellItem::~CellItem()
 //-------------------------------------------------------------------------------------------------
 QRectF CellItem::boundingRect()const
 {
-    return QRectF(0,0,200,300);
+    return QRectF(0,0, Config::instance()->cellWidth(), Config::instance()->cellHeight() );
 }
 
 //-------------------------------------------------------------------------------------------------

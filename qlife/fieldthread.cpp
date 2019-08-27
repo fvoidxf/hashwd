@@ -4,24 +4,12 @@
 *         2019
 */
 #include "fieldthread.h"
-
-#ifndef FIELD_N
-    #define FIELD_N 20
-#endif
-
-#ifndef FIELD_M
-    #define FIELD_M 20
-#endif
-
-#ifndef THREAD_TM
-    #define THREAD_TM 300
-#endif
+#include "config.h"
 
 //-------------------------------------------------------------------------------------------------
-FieldThread::FieldThread(QSharedPointer<Field> pField, QObject *parent)
+FieldThread::FieldThread(QObject *parent)
     :QThread(parent)
-    ,field(pField)
-    ,model(new DynModel(FIELD_N,FIELD_M))
+    ,model(new DynModel( Config::instance()->columns() , Config::instance()->rows() ))
     ,isRunning(true)
 {
     time_t t;
@@ -30,7 +18,7 @@ FieldThread::FieldThread(QSharedPointer<Field> pField, QObject *parent)
 
     model->allocate();
     model->clear();
-    randomModel(FIELD_N/4, FIELD_M/5);
+    randomModel( Config::instance()->columns() /8, Config::instance()->rows() /6 );
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -63,10 +51,7 @@ void FieldThread::setStopFlag()
 //-------------------------------------------------------------------------------------------------
 unsigned char FieldThread::randomBool()
 {
-    unsigned char c = rand();
-    unsigned char r = c % 2;
-
-    return r;
+    return rand() % 2;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -76,24 +61,24 @@ void FieldThread::run()
     {
         emit clearCells();
         modelStep();
-        for(auto i = 0; i < FIELD_N; i++)
+        for(auto i = 0; i < Config::instance()->columns(); i++)
         {
-            for(auto j = 0; j < FIELD_M; j++)
+            for(auto j = 0; j < Config::instance()->rows(); j++)
             {
                 if(model->item(i,j) == 1)
                     emit addCell(i,j);
             }
         }
-        QThread::msleep(THREAD_TM);
+        QThread::msleep( Config::instance()->threadTimeoutMs() );
     }
 }
 
 //-------------------------------------------------------------------------------------------------
 void FieldThread::modelStep()
 {
-    for(auto i = 1; i < FIELD_N - 1; i++)
+    for(auto i = 1; i < Config::instance()->columns() - 1; i++)
     {
-        for(auto j = 1; j < FIELD_N - 1; j++)
+        for(auto j = 1; j < Config::instance()->rows() - 1; j++)
         {
             int alive_cnt = 0;
             if(model->item(i-1, j-1))

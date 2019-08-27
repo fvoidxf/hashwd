@@ -38,7 +38,8 @@ SOURCES += \
         fieldview.cpp \
         main.cpp \
         mainwindow.cpp \
-        workarea.cpp
+        workarea.cpp \
+		config.cpp
 
 HEADERS += \
         cell.h \
@@ -49,7 +50,8 @@ HEADERS += \
         fieldthread.h \
         fieldview.h \
         mainwindow.h \
-        workarea.h
+        workarea.h \
+		config.h
 
 FORMS += \
         mainwindow.ui
