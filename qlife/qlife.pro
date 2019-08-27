@@ -29,10 +29,8 @@ LIBS += "C:\Program Files (x86)\Visual Leak Detector\lib\Win64\vld.lib"
 CONFIG += c++11
 
 SOURCES += \
-        cell.cpp \
         cellitem.cpp \
         dynmodel.cpp \
-        field.cpp \
         fieldscene.cpp \
         fieldthread.cpp \
         fieldview.cpp \
@@ -42,10 +40,8 @@ SOURCES += \
 		config.cpp
 
 HEADERS += \
-        cell.h \
         cellitem.h \
         dynmodel.h \
-        field.h \
         fieldscene.h \
         fieldthread.h \
         fieldview.h \

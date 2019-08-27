@@ -10,7 +10,6 @@
 #include <QSharedPointer>
 #include <QMutex>
 #include "dynmodel.h"
-#include "field.h"
 
 //=================================================================================================
 class FieldThread : public QThread

@@ -7,7 +7,6 @@
 #include "fieldthread.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "field.h"
 #include "dynmodel.h"
 #include "fieldscene.h"
 #include "fieldview.h"
@@ -17,54 +16,49 @@
 //-------------------------------------------------------------------------------------------------
 MainWindow::MainWindow(QWidget *parent)
     :QMainWindow(parent)
-    ,ui(new Ui::MainWindow)
-    ,scene(nullptr)
-	,area(nullptr)
+    ,m_ui(new Ui::MainWindow)
+    ,m_scene(nullptr)
+	,m_area(nullptr)
 {
-    ui->setupUi(this);
+    m_ui->setupUi(this);
 	setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
 	setFixedSize( Config::instance()->screenWidth(), Config::instance()->screenHeight() );
-    setCentralWidget(ui->graphicsView);
+    setCentralWidget(m_ui->graphicsView);
 }
 
 //-------------------------------------------------------------------------------------------------
 MainWindow::~MainWindow()
 {
-	if (thread) {
-		thread->setStopFlag();
-		thread->wait();
+	if (m_thread) {
+		m_thread->setStopFlag();
+		m_thread->wait();
 	}
-    delete ui;
+    delete m_ui;
 }
 
 //-------------------------------------------------------------------------------------------------
 bool MainWindow::init()
 {
-	field.reset(new Field(Config::instance()->columns(), Config::instance()->rows()));
-	thread = new FieldThread(this);
+	m_thread = new FieldThread(this);
 
-	connect(thread, SIGNAL(clearCells()), this, SLOT(OnClearCells()));
-	connect(thread, SIGNAL(dataReady()), this, SLOT(OnDataReady()));
+	connect(m_thread, SIGNAL(clearCells()), this, SLOT(OnClearCells()));
+	connect(m_thread, SIGNAL(dataReady()), this, SLOT(OnDataReady()));
 
-    scene = new FieldScene(this);
-    ui->graphicsView->setScene(scene);
+    m_scene = new FieldScene(this);
+	m_scene->init();
+
+    m_ui->graphicsView->setScene(m_scene);
 
 	QRectF areasz(0, 0, Config::instance()->fieldWidth(), Config::instance()->fieldHeight());
 
-	area = new Workarea(areasz, Config::instance()->columns(), Config::instance()->rows());
-	scene->addItem(area);
+	//m_area = new Workarea(areasz, Config::instance()->columns(), Config::instance()->rows());
+	//m_scene->addArea(m_area);
 
-    field->setScene(scene);
-    field->init();
-    ui->graphicsView->setWorkarea(field->getWorkarea());
-    field->setBackgroundColor(QColor(255,0,0));
-    field->setCellColor(QColor(0,255,128));
-    field->setBorderColor(Qt::yellow);
-    field->setBackgroundColor(Qt::green);
-    field->setCellColor(Qt::blue);
-    field->update();
+    //m_ui->graphicsView->setWorkarea(m_area);
 
-    thread->start();
+	m_scene->update();
+
+    m_thread->start();
 
     return true;
 }
@@ -72,12 +66,15 @@ bool MainWindow::init()
 //-------------------------------------------------------------------------------------------------
 void MainWindow::OnClearCells()
 {
-    field->clearCells();
-    field->update();
+	if (m_scene)
+	{
+		m_scene->clearCells();
+		m_scene->update();
+	}
 }
 
 //-------------------------------------------------------------------------------------------------
-void MainWindow::OnAddCell(int i, int j)
+/*void MainWindow::OnAddCell(int i, int j)
 {
 #ifdef _DEBUG
     _CrtMemState _memState;
@@ -91,20 +88,23 @@ void MainWindow::OnAddCell(int i, int j)
     _CrtMemDumpAllObjectsSince(&_memState);
 
 #endif
-}
+}*/
 
 //-------------------------------------------------------------------------------------------------
 void MainWindow::OnDataReady()
 {
-	QMutexLocker lock(thread->getMutex());
-	for (auto i = 0; i < field->width(); i++)
+	if (!m_scene)
+		return;
+
+	QMutexLocker lock(m_thread->getMutex());
+	for (auto i = 0; i < Config::instance()->columns(); i++)
 	{
-		for (auto j = 0; j < field->height(); j++)
+		for (auto j = 0; j < Config::instance()->rows(); j++)
 		{
-			if (thread->getData()->item(i, j) == 1)
+			if (m_thread->getData()->item(i, j) == 1)
 			{
-				field->addCell(i, j);
-				field->update();
+				m_scene->addCell(i, j);
+				m_scene->update();
 			}
 		}
 	}

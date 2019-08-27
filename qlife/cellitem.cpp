@@ -3,6 +3,7 @@
 * General Public License v3
 *         2019
 */
+#include <QPainter>
 #include "cellitem.h"
 #include "config.h"
 
@@ -32,7 +33,9 @@ void CellItem::paint(QPainter *painter,
                        const QStyleOptionGraphicsItem *option,
                        QWidget *widget)
 {
-
+	QRect rc( m_i*Config::instance()->cellWidth(), m_j*Config::instance()->cellHeight(),
+		      Config::instance()->cellWidth(), Config::instance()->cellHeight() );
+	painter->drawRect(rc);
 }
 
 //-------------------------------------------------------------------------------------------------

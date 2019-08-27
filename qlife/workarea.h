@@ -22,6 +22,9 @@ public:
 
     virtual void setSize(qreal w, qreal h);
 
+	int width()const { return m_n; }
+	int height()const { return m_m; }
+
 protected:
     QRectF m_rect;
     const int m_n;
