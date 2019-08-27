@@ -12,21 +12,19 @@
 #include "fieldscene.h"
 #include "fieldview.h"
 #include "config.h"
+#include "workarea.h"
 
 //-------------------------------------------------------------------------------------------------
 MainWindow::MainWindow(QWidget *parent)
     :QMainWindow(parent)
     ,ui(new Ui::MainWindow)
     ,scene(nullptr)
+	,area(nullptr)
 {
     ui->setupUi(this);
 	setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
 	setFixedSize( Config::instance()->screenWidth(), Config::instance()->screenHeight() );
     setCentralWidget(ui->graphicsView);
-    //field.reset(new Field(FIELD_N, FIELD_M));
-    //thread = new FieldThread(field, this);
-    //connect(thread, SIGNAL(clearCells()), this, SLOT(OnClearCells()));
-    //connect(thread, SIGNAL(addCell(int,int)), this, SLOT(OnAddCell(int,int)));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -42,10 +40,21 @@ MainWindow::~MainWindow()
 //-------------------------------------------------------------------------------------------------
 bool MainWindow::init()
 {
+	//field.reset(new Field(Config::instance()->columns(), Config::instance()->rows()));
+	thread = new FieldThread(this);
+
+	connect(thread, SIGNAL(clearCells()), this, SLOT(OnClearCells()));
+	connect(thread, SIGNAL(addCell(int,int)), this, SLOT(OnAddCell(int,int)));
+
     scene = new FieldScene(this);
     ui->graphicsView->setScene(scene);
 
-    field->setScene(scene);
+	QRectF areasz(0, 0, Config::instance()->fieldWidth(), Config::instance()->fieldHeight());
+
+	area = new Workarea(areasz, Config::instance()->columns(), Config::instance()->rows());
+	scene->addItem(area);
+
+    /*field->setScene(scene);
     field->init();
     ui->graphicsView->setWorkarea(field->getWorkarea());
     field->setBackgroundColor(QColor(255,0,0));
@@ -53,7 +62,7 @@ bool MainWindow::init()
     field->setBorderColor(Qt::yellow);
     field->setBackgroundColor(Qt::green);
     field->setCellColor(Qt::blue);
-    field->update();
+    field->update();*/
 
     thread->start();
 
@@ -63,8 +72,8 @@ bool MainWindow::init()
 //-------------------------------------------------------------------------------------------------
 void MainWindow::OnClearCells()
 {
-    field->clearCells();
-    field->update();
+    //field->clearCells();
+    //field->update();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -76,8 +85,8 @@ void MainWindow::OnAddCell(int i, int j)
     //_CrtDumpMemoryLeaks();
 #endif
     //Дичайшие утечки, которые дают оба метода
-    field->addCell(i,j);
-    field->update();
+    //field->addCell(i,j);
+    //field->update();
 #ifdef _DEBUG
     _CrtMemDumpAllObjectsSince(&_memState);
 

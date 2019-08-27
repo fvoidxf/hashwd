@@ -36,14 +36,14 @@ void Workarea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
     for(auto i = 0; i < m_n; i++)
     {
-        qreal k = m_rect.width()/m_m;
+        qreal k = m_rect.width()/m_n;
         qreal x = i*k;
         QLineF line(x, 0, x, m_rect.height());
         painter->drawLine(line);
     }
     for(auto j = 0; j < m_m; j++)
     {
-        qreal k = m_rect.height()/m_n;
+        qreal k = m_rect.height()/m_m;
         qreal y = j*k;
         QLineF line(0, y, m_rect.width(), y);
         painter->drawLine(line);

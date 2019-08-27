@@ -14,6 +14,7 @@
 class Field;
 class FieldThread;
 class FieldScene;
+class Workarea;
 
 namespace Ui {
     class MainWindow;
@@ -33,6 +34,7 @@ private:
     FieldScene *scene;
     QSharedPointer<Field> field;
     FieldThread *thread;
+	Workarea *area;
 
 public:
     bool init();
