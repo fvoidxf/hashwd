@@ -40,7 +40,7 @@ MainWindow::~MainWindow()
 //-------------------------------------------------------------------------------------------------
 bool MainWindow::init()
 {
-	//field.reset(new Field(Config::instance()->columns(), Config::instance()->rows()));
+	field.reset(new Field(Config::instance()->columns(), Config::instance()->rows()));
 	thread = new FieldThread(this);
 
 	connect(thread, SIGNAL(clearCells()), this, SLOT(OnClearCells()));
@@ -54,7 +54,7 @@ bool MainWindow::init()
 	area = new Workarea(areasz, Config::instance()->columns(), Config::instance()->rows());
 	scene->addItem(area);
 
-    /*field->setScene(scene);
+    field->setScene(scene);
     field->init();
     ui->graphicsView->setWorkarea(field->getWorkarea());
     field->setBackgroundColor(QColor(255,0,0));
@@ -62,7 +62,7 @@ bool MainWindow::init()
     field->setBorderColor(Qt::yellow);
     field->setBackgroundColor(Qt::green);
     field->setCellColor(Qt::blue);
-    field->update();*/
+    field->update();
 
     thread->start();
 
@@ -72,8 +72,8 @@ bool MainWindow::init()
 //-------------------------------------------------------------------------------------------------
 void MainWindow::OnClearCells()
 {
-    //field->clearCells();
-    //field->update();
+    field->clearCells();
+    field->update();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -85,8 +85,8 @@ void MainWindow::OnAddCell(int i, int j)
     //_CrtDumpMemoryLeaks();
 #endif
     //Дичайшие утечки, которые дают оба метода
-    //field->addCell(i,j);
-    //field->update();
+    field->addCell(i,j);
+    field->update();
 #ifdef _DEBUG
     _CrtMemDumpAllObjectsSince(&_memState);
 
