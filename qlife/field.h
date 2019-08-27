@@ -55,6 +55,9 @@ public:
 
     Workarea* getWorkarea(){return workarea;}
 
+	int width()const { return w; }
+	int height()const { return h; }
+
 protected:
     //virtual bool createBorders();
 };

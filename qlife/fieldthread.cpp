@@ -60,15 +60,10 @@ void FieldThread::run()
     while(isRunning)
     {
         emit clearCells();
+		QMutexLocker lock(&m_mutex);
         modelStep();
-        for(auto i = 0; i < Config::instance()->columns(); i++)
-        {
-            for(auto j = 0; j < Config::instance()->rows(); j++)
-            {
-                if(model->item(i,j) == 1)
-                    emit addCell(i,j);
-            }
-        }
+		lock.unlock();
+		emit dataReady();
         QThread::msleep( Config::instance()->threadTimeoutMs() );
     }
 }

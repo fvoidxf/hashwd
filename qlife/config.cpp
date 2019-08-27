@@ -11,7 +11,7 @@
 #define ROWS				48
 #define FIELD_WIDTH			640
 #define FIELD_HEIGHT		480
-#define TIMEOUT_MS			300
+#define TIMEOUT_MS			50
 
 //-------------------------------------------------------------------------------------------------
 Config* Config::m_self = nullptr;

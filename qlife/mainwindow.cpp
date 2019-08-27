@@ -44,7 +44,7 @@ bool MainWindow::init()
 	thread = new FieldThread(this);
 
 	connect(thread, SIGNAL(clearCells()), this, SLOT(OnClearCells()));
-	connect(thread, SIGNAL(addCell(int,int)), this, SLOT(OnAddCell(int,int)));
+	connect(thread, SIGNAL(dataReady()), this, SLOT(OnDataReady()));
 
     scene = new FieldScene(this);
     ui->graphicsView->setScene(scene);
@@ -91,6 +91,23 @@ void MainWindow::OnAddCell(int i, int j)
     _CrtMemDumpAllObjectsSince(&_memState);
 
 #endif
+}
+
+//-------------------------------------------------------------------------------------------------
+void MainWindow::OnDataReady()
+{
+	QMutexLocker lock(thread->getMutex());
+	for (auto i = 0; i < field->width(); i++)
+	{
+		for (auto j = 0; j < field->height(); j++)
+		{
+			if (thread->getData()->item(i, j) == 1)
+			{
+				field->addCell(i, j);
+				field->update();
+			}
+		}
+	}
 }
 
 //-------------------------------------------------------------------------------------------------

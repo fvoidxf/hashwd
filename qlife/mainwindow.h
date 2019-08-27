@@ -42,6 +42,7 @@ public:
 public slots:
     void OnClearCells();
     void OnAddCell(int i, int j);
+	void OnDataReady();
 };
 
 //=================================================================================================

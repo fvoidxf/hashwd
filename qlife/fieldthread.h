@@ -8,6 +8,7 @@
 
 #include <QThread>
 #include <QSharedPointer>
+#include <QMutex>
 #include "dynmodel.h"
 #include "field.h"
 
@@ -28,14 +29,18 @@ public:
 
     inline unsigned char randomBool();
 
+	QSharedPointer<DynModel>& getData() { return model; }
+	QMutex* getMutex() { return &m_mutex; }
+
 protected:
     virtual void run()override;
     QSharedPointer<DynModel> model;
     mutable bool isRunning;
+	QMutex m_mutex;
 
 signals:
     void clearCells();
-    void addCell(int i, int j);
+	void dataReady();
 };
 
 //=================================================================================================
