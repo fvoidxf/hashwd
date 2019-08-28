@@ -19,7 +19,6 @@ MainWindow::MainWindow(QWidget *parent)
     ,m_ui(new Ui::MainWindow)
     ,m_scene(nullptr)
 	,m_area(nullptr)
-	,m_mode(GameMode)
 {
     m_ui->setupUi(this);
 	setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
@@ -30,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
 	menuBar()->addMenu(m_mainMenu);
 
 	m_changeModeAction = new QAction("Edit mode", this);
+	m_changeModeAction->setCheckable(true);
 	connect(m_changeModeAction, SIGNAL(triggered()), this, SLOT(OnChangeMode()));
 
 	m_controlMenu = new QMenu("Control", this);
@@ -58,6 +58,7 @@ MainWindow::MainWindow(QWidget *parent)
 	m_controlMenu->addAction(m_stopAction);
 	m_controlMenu->addAction(m_clearFieldAction);
 
+	Config::instance()->setGameMode();
 	statusBar()->showMessage("Game mode");
 }
 
@@ -140,7 +141,7 @@ void MainWindow::OnExit()
 //-------------------------------------------------------------------------------------------------
 void MainWindow::OnStart()
 {
-	if(m_mode == GameMode)
+	if(Config::instance()->currentMode() == Config::GameMode)
 		m_thread->start();
 }
 
@@ -153,16 +154,16 @@ void MainWindow::OnStop()
 //-------------------------------------------------------------------------------------------------
 void MainWindow::OnChangeMode()
 {
-	if (m_mode == GameMode)
+	if (Config::instance()->currentMode() == Config::GameMode)
 	{
-		m_mode = EditMode;
+		Config::instance()->setEditMode();
 		statusBar()->showMessage("Edit mode");
 		if(m_thread->isRunning())
 			m_thread->terminate();
 	}
-	else if (m_mode == EditMode)
+	else if (Config::instance()->currentMode() == Config::EditMode)
 	{
-		m_mode = GameMode;
+		Config::instance()->setGameMode();
 		statusBar()->showMessage("Game mode");
 	}
 }

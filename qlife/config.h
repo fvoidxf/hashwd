@@ -11,6 +11,14 @@
 //=================================================================================================
 class Config
 {
+public:
+	enum WorkMode
+	{
+		UndefinedMode = 0,			//Неопределенный
+		GameMode,					//Режим игры
+		EditMode,					//Режим редактирования
+	};
+
 protected:
 	int m_screenWidth;
 	int m_screenHeight;
@@ -29,6 +37,8 @@ protected:
 	int m_randomM_POS;
 
 	qreal m_cellScale;
+
+	WorkMode m_workMode;
 
 public:
 	virtual ~Config(){}
@@ -60,6 +70,12 @@ public:
 	int randomCountM()const { return m_randomM_CNT; }
 
 	qreal cellScaleFactor()const { return m_cellScale; }
+
+	WorkMode currentMode()const { return m_workMode; }
+	void setGameMode() { m_workMode = GameMode; }
+	void setEditMode() { m_workMode = EditMode; }
+
+	void scenePosToIndex(QPointF pos, int& i, int& j);
 };
 
 //=================================================================================================

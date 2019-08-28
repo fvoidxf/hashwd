@@ -41,6 +41,7 @@ Config::Config()
 	,m_randomM_POS(RANDOM_START_M)
 	,m_randomN_CNT(RANDOM_COUNT_N)
 	,m_randomM_CNT(RANDOM_COUNT_M)
+	,m_workMode(UndefinedMode)
 {
 	static_assert(COLUMNS > 2, "columns must be greater 2");
 	static_assert(ROWS > 2, "rows must be greater 2");
@@ -52,6 +53,13 @@ Config* Config::instance()
 	if (!m_self)
 		m_self = new Config;
 	return m_self;
+}
+
+//-------------------------------------------------------------------------------------------------
+void Config::scenePosToIndex(QPointF pos, int& i, int& j)
+{
+	i = (int)(pos.x() / cellWidth());
+	j = (int)(pos.y() / cellHeight());
 }
 
 //-------------------------------------------------------------------------------------------------

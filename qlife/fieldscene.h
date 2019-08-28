@@ -37,6 +37,9 @@ public:
 
 	virtual bool init();
 	virtual void addArea(Workarea *area);
+
+protected:
+	virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)override;
 };
 
 //=================================================================================================

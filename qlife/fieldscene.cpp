@@ -3,6 +3,8 @@
 * General Public License v3
 *         2019
 */
+#include <QDebug>
+#include <QGraphicsSceneMouseEvent>
 #include "dynmodel.h"
 #include "workarea.h"
 #include "fieldscene.h"
@@ -86,6 +88,48 @@ void FieldScene::addArea(Workarea *area)
 {
 	m_area = area;
 	addItem(area);
+}
+
+//-------------------------------------------------------------------------------------------------
+void FieldScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+	if (Config::instance()->currentMode() == Config::GameMode)
+		QGraphicsScene::mousePressEvent(event);
+	else if (Config::instance()->currentMode() == Config::EditMode)
+	{
+		if (Qt::LeftButton & event->button())
+		{
+			QPointF pos = event->scenePos();
+			qDebug() << "scene pos: " << pos.x() << " " << pos.y();
+			QList<QGraphicsItem*> _items = items(pos, Qt::ContainsItemShape);
+			QGraphicsItem* pRM = nullptr;
+			for (QGraphicsItem* itm : _items)
+			{
+				if (dynamic_cast<CellItem*>(itm) != nullptr)
+				{
+					qDebug() << "founded cell!";
+					pRM = itm;
+					continue;
+				}
+			}
+			if (pRM)
+			{
+				removeItem(pRM);
+				delete pRM;
+			}
+			else
+			{
+				int i = 0;
+				int j = 0;
+				Config::instance()->scenePosToIndex(pos, i, j);
+				CellItem *pItem = new CellItem(i, j);
+				addItem(pItem);
+			}
+			if (_items.empty())
+				qDebug() << "No cells founded!";
+		}
+		QGraphicsScene::mousePressEvent(event);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------

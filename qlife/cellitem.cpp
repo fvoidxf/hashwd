@@ -25,7 +25,10 @@ CellItem::~CellItem()
 //-------------------------------------------------------------------------------------------------
 QRectF CellItem::boundingRect()const
 {
-    return QRectF(0,0, Config::instance()->cellWidth(), Config::instance()->cellHeight() );
+    return QRectF(Config::instance()->cellWidth()*m_i,
+				  Config::instance()->cellHeight()*m_j, 
+				  Config::instance()->cellWidth(), 
+				  Config::instance()->cellHeight() );
 }
 
 //-------------------------------------------------------------------------------------------------
