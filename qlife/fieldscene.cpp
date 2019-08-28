@@ -8,6 +8,7 @@
 #include "dynmodel.h"
 #include "workarea.h"
 #include "fieldscene.h"
+#include "fieldthread.h"
 #include "cellitem.h"
 #include "config.h"
 
@@ -15,6 +16,7 @@
 FieldScene::FieldScene(QObject *parent)
     :QGraphicsScene (parent)
 	,m_area(nullptr)
+	,m_thread(nullptr)
 {
 
 }
@@ -23,6 +25,7 @@ FieldScene::FieldScene(QObject *parent)
 FieldScene::FieldScene(const QRectF &sceneRect, QObject *parent)
 	:QGraphicsScene(sceneRect, parent)
 	,m_area(nullptr)
+	, m_thread(nullptr)
 {
 
 }
@@ -31,6 +34,7 @@ FieldScene::FieldScene(const QRectF &sceneRect, QObject *parent)
 FieldScene::FieldScene(qreal x, qreal y, qreal width, qreal height, QObject *parent)
 	:QGraphicsScene(x, y, width, height, parent)
 	,m_area(nullptr)
+	, m_thread(nullptr)
 {
 
 }
@@ -57,11 +61,20 @@ void FieldScene::fromModel(DynModel& model)
 //-------------------------------------------------------------------------------------------------
 bool FieldScene::addCell(int i, int j)
 {
-	CellItem *pCell = new CellItem(i, j);
-	pCell->setBackgroundColor( Config::instance()->cellColor() );
-	pCell->setBorderColor( Config::instance()->borderColor() );
-	addItem(pCell);
-	m_cells.push_back(pCell);
+	if (Config::instance()->currentMode() == Config::GameMode)
+	{
+		CellItem *pCell = new CellItem(i, j);
+		pCell->setBackgroundColor(Config::instance()->cellColor());
+		pCell->setBorderColor(Config::instance()->borderColor());
+		addItem(pCell);
+		m_cells.push_back(pCell);
+	}
+	else if (Config::instance()->currentMode() == Config::EditMode)
+	{
+		if (!m_thread)
+			return false;
+		m_thread->getData()->item(i, j) = 1;
+	}
 
 	return true;
 }
@@ -69,12 +82,14 @@ bool FieldScene::addCell(int i, int j)
 //-------------------------------------------------------------------------------------------------
 void FieldScene::clearCells()
 {
+	qDebug() << "FieldScene::clearCells() cells size: " << m_cells.size();
 	for (CellItem* c : m_cells)
 	{
+		_internalRemoveCell(c);
 		removeItem(c);
-		delete c;
+		//delete c;
 	}
-	m_cells.clear();
+	//m_cells.clear();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -114,22 +129,42 @@ void FieldScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 			}
 			if (pRM)
 			{
+				_internalRemoveCell(pRM);
 				removeItem(pRM);
 				delete pRM;
+				qDebug() << "mousePressEvent remove item, cells size: " << m_cells.size();
 			}
 			else
 			{
 				int i = 0;
 				int j = 0;
 				Config::instance()->scenePosToIndex(pos, i, j);
-				CellItem *pItem = new CellItem(i, j);
-				addItem(pItem);
+				addCell(i, j);
+				qDebug() << "Added cell: " << i << ", " << j;
 			}
-			if (_items.empty())
-				qDebug() << "No cells founded!";
 		}
 		QGraphicsScene::mousePressEvent(event);
 	}
+}
+
+//-------------------------------------------------------------------------------------------------
+void FieldScene::_internalRemoveCell(QGraphicsItem* pCell)
+{
+	auto index = 0;
+	for (auto cell : m_cells)
+	{
+		if (pCell == cell)
+		{
+			m_cells.remove(index++);
+			return;
+		}
+	}
+}
+
+//-------------------------------------------------------------------------------------------------
+void FieldScene::setDataThread(FieldThread* thread)
+{
+	m_thread = thread;
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -118,25 +118,6 @@ void FieldThread::modelStep()
 }
 
 //-------------------------------------------------------------------------------------------------
-void FieldThread::modelInit()
-{
-	m_model->item(0,0) = 1;
-	m_model->item(0,1) = 1;
-	m_model->item(0,2) = 1;
-
-	m_model->item(1,0) = 1;
-	m_model->item(1,2) = 1;
-	m_model->item(1,3) = 1;
-
-	m_model->item(2,1) = 1;
-	m_model->item(2,2) = 1;
-	m_model->item(3,2) = 1;
-
-	m_model->item(0,5) = 1;
-	m_model->item(1,5) = 1;
-}
-
-//-------------------------------------------------------------------------------------------------
 void FieldThread::clearModel()
 {
 	QMutexLocker lock(&m_mutex);

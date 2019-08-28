@@ -21,6 +21,10 @@
 #define CELL_SCALE_FACTOR	0.5
 #define CELL_SCALE_STEP		0.2
 
+#define VERSION_MAJOR		0
+#define VERSION_MIDLE		5
+#define VERSION_MINOR		0
+
 //-------------------------------------------------------------------------------------------------
 Config* Config::m_self = nullptr;
 
@@ -42,6 +46,9 @@ Config::Config()
 	,m_randomN_CNT(RANDOM_COUNT_N)
 	,m_randomM_CNT(RANDOM_COUNT_M)
 	,m_workMode(UndefinedMode)
+	,m_minVer(VERSION_MINOR)
+	,m_midVer(VERSION_MIDLE)
+	,m_majVer(VERSION_MAJOR)
 {
 	static_assert(COLUMNS > 2, "columns must be greater 2");
 	static_assert(ROWS > 2, "rows must be greater 2");
@@ -60,6 +67,13 @@ void Config::scenePosToIndex(QPointF pos, int& i, int& j)
 {
 	i = (int)(pos.x() / cellWidth());
 	j = (int)(pos.y() / cellHeight());
+}
+
+//-------------------------------------------------------------------------------------------------
+QString Config::version()const
+{
+	QString sVer = QString("%1.%2.%3").arg(majVer()).arg(midVer()).arg(minVer());
+	return sVer;
 }
 
 //-------------------------------------------------------------------------------------------------

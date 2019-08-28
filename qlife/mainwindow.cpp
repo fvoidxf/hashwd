@@ -58,6 +58,10 @@ MainWindow::MainWindow(QWidget *parent)
 	m_controlMenu->addAction(m_stopAction);
 	m_controlMenu->addAction(m_clearFieldAction);
 
+	QString sTitle = windowTitle();
+	sTitle += QString(" %1").arg(Config::instance()->version());
+	setWindowTitle(sTitle);
+
 	Config::instance()->setGameMode();
 	statusBar()->showMessage("Game mode");
 }
@@ -81,6 +85,7 @@ bool MainWindow::init()
 	connect(m_thread, SIGNAL(dataReady()), this, SLOT(OnDataReady()));
 
     m_scene = new FieldScene(this);
+	m_scene->setDataThread(m_thread);
 	m_scene->init();
 
     m_ui->graphicsView->setScene(m_scene);

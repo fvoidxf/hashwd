@@ -36,6 +36,10 @@ protected:
 	int m_randomN_POS;
 	int m_randomM_POS;
 
+	int m_majVer;
+	int m_midVer;
+	int m_minVer;
+
 	qreal m_cellScale;
 
 	WorkMode m_workMode;
@@ -76,6 +80,12 @@ public:
 	void setEditMode() { m_workMode = EditMode; }
 
 	void scenePosToIndex(QPointF pos, int& i, int& j);
+
+	int minVer()const { return m_minVer; }
+	int midVer()const { return m_midVer; }
+	int majVer()const { return m_majVer; }
+
+	QString version()const;
 };
 
 //=================================================================================================
