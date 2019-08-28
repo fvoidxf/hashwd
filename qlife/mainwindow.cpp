@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     ,m_ui(new Ui::MainWindow)
     ,m_scene(nullptr)
 	,m_area(nullptr)
+	,m_mode(GameMode)
 {
     m_ui->setupUi(this);
 	setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
@@ -28,11 +29,17 @@ MainWindow::MainWindow(QWidget *parent)
 	m_mainMenu = new QMenu("File", this);
 	menuBar()->addMenu(m_mainMenu);
 
+	m_changeModeAction = new QAction("Edit mode", this);
+	connect(m_changeModeAction, SIGNAL(triggered()), this, SLOT(OnChangeMode()));
+
 	m_controlMenu = new QMenu("Control", this);
 	menuBar()->addMenu(m_controlMenu);
 
-	m_exitAction = new QAction("Exit");
+	m_exitAction = new QAction("Exit", this);
 	connect(m_exitAction, SIGNAL(triggered()), this, SLOT(OnExit()));
+
+	m_fillRandom = new QAction("Fill random cells", this);
+	connect(m_fillRandom, SIGNAL(triggered()), this, SLOT(OnFillRandom()));
 
 	m_startAction = new QAction("Start", this);
 	connect(m_startAction, SIGNAL(triggered()), this, SLOT(OnStart()));
@@ -40,9 +47,18 @@ MainWindow::MainWindow(QWidget *parent)
 	m_stopAction = new QAction("Stop", this);
 	connect(m_stopAction, SIGNAL(triggered()), this, SLOT(OnStop()));
 
+	m_clearFieldAction = new QAction("Clear field", this);
+	connect(m_clearFieldAction, SIGNAL(triggered()), this, SLOT(OnClearField()));
+
+	m_mainMenu->addAction(m_changeModeAction);
 	m_mainMenu->addAction(m_exitAction);
+
+	m_controlMenu->addAction(m_fillRandom);
 	m_controlMenu->addAction(m_startAction);
 	m_controlMenu->addAction(m_stopAction);
+	m_controlMenu->addAction(m_clearFieldAction);
+
+	statusBar()->showMessage("Game mode");
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -124,7 +140,8 @@ void MainWindow::OnExit()
 //-------------------------------------------------------------------------------------------------
 void MainWindow::OnStart()
 {
-	m_thread->start();
+	if(m_mode == GameMode)
+		m_thread->start();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -134,3 +151,45 @@ void MainWindow::OnStop()
 }
 
 //-------------------------------------------------------------------------------------------------
+void MainWindow::OnChangeMode()
+{
+	if (m_mode == GameMode)
+	{
+		m_mode = EditMode;
+		statusBar()->showMessage("Edit mode");
+		if(m_thread->isRunning())
+			m_thread->terminate();
+	}
+	else if (m_mode == EditMode)
+	{
+		m_mode = GameMode;
+		statusBar()->showMessage("Game mode");
+	}
+}
+
+//------------------------------------------------------------------------------------------------
+void MainWindow::OnClearField()
+{
+	if (m_scene)
+	{
+		m_scene->clearCells();
+		m_thread->clearModel();
+		m_scene->update();
+	}
+}
+
+//------------------------------------------------------------------------------------------------
+void MainWindow::OnFillRandom()
+{
+	if (m_scene)
+	{
+		m_scene->clearCells();
+		m_thread->randomModel();
+		m_thread->setStepCount(1);
+		m_thread->start();
+		m_scene->update();
+		m_thread->setInfiniteSteps();
+	}
+}
+
+//------------------------------------------------------------------------------------------------

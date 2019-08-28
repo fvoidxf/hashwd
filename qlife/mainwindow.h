@@ -30,19 +30,29 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+	enum Mode
+	{
+		UndefinedMode = 0,
+		GameMode,
+		EditMode,
+	};
+
 private:
     Ui::MainWindow *m_ui;
     FieldScene *m_scene;
     FieldThread *m_thread;
 	Workarea *m_area;
+	Mode m_mode;
 
 	QMenu *m_mainMenu;
 	QMenu *m_controlMenu;
 
 	QAction *m_exitAction;
-
 	QAction *m_startAction;
 	QAction *m_stopAction;
+	QAction *m_changeModeAction;
+	QAction *m_clearFieldAction;
+	QAction *m_fillRandom;
 
 public:
     bool init();
@@ -55,6 +65,11 @@ public slots:
 
 	void OnStart();
 	void OnStop();
+
+	void OnChangeMode();
+
+	void OnClearField();
+	void OnFillRandom();
 };
 
 //=================================================================================================

@@ -9,16 +9,16 @@
 //-------------------------------------------------------------------------------------------------
 FieldThread::FieldThread(QObject *parent)
     :QThread(parent)
-    ,model(new DynModel( Config::instance()->columns() , Config::instance()->rows() ))
-    ,isRunning(true)
+    ,m_model(new DynModel( Config::instance()->columns() , Config::instance()->rows() ))
+    ,m_isRunning(true)
+	,m_stepCount(GetInfiniteSteps())
 {
     time_t t;
     time(&t);
     srand( t );
 
-    model->allocate();
-    model->clear();
-    randomModel( Config::instance()->columns() /4, Config::instance()->rows() /2 );
+    m_model->allocate();
+    m_model->clear();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -28,24 +28,21 @@ FieldThread::~FieldThread()
 }
 
 //-------------------------------------------------------------------------------------------------
-void FieldThread::randomModel(int N, int M)
+void FieldThread::randomModel(int start_i, int start_j, int i_cnt, int j_cnt)
 {
-    int limN = model->N() <= N ? model->N() : N;
-    int limM = model->M() <= M ? model->M() : M;
-
-    for(auto i = 0; i < limN; i++)
-    {
-        for(auto j = 0; j < limM; j++)
-        {
-            model->item(i,j) = randomBool();
-        }
-    }
+	for (auto i = start_i; i < (start_i + i_cnt); i++)
+	{
+		for (auto j = start_j; j < (start_j + j_cnt); j++)
+		{
+			m_model->item(i, j) = randomBool();
+		}
+	}
 }
 
 //-------------------------------------------------------------------------------------------------
 void FieldThread::setStopFlag()
 {
-    isRunning = false;
+    m_isRunning = false;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -57,7 +54,7 @@ unsigned char FieldThread::randomBool()
 //-------------------------------------------------------------------------------------------------
 void FieldThread::run()
 {
-    while(isRunning)
+    while(m_isRunning && m_stepCount)
     {
         emit clearCells();
 		QMutexLocker lock(&m_mutex);
@@ -65,6 +62,8 @@ void FieldThread::run()
 		lock.unlock();
 		emit dataReady();
         QThread::msleep( Config::instance()->threadTimeoutMs() );
+		if (m_stepCount != GetInfiniteSteps())
+			--m_stepCount;
     }
 }
 
@@ -76,44 +75,44 @@ void FieldThread::modelStep()
         for(auto j = 1; j < Config::instance()->rows() - 1; j++)
         {
             int alive_cnt = 0;
-            if(model->item(i-1, j-1))
+            if(m_model->item(i-1, j-1))
                 ++alive_cnt;
-            if(model->item(i, j-1))
+            if(m_model->item(i, j-1))
                 ++alive_cnt;
-            if(model->item(i+1,j-1))
-                ++alive_cnt;
-
-            if(model->item(i-1, j))
-                ++alive_cnt;
-            if(model->item(i+1, j))
+            if(m_model->item(i+1,j-1))
                 ++alive_cnt;
 
-            if(model->item(i-1, j+1))
+            if(m_model->item(i-1, j))
                 ++alive_cnt;
-            if(model->item(i, j+1))
-                ++alive_cnt;
-            if(model->item(i+1, j+1))
+            if(m_model->item(i+1, j))
                 ++alive_cnt;
 
-            if(model->item(i,j)==0)
+            if(m_model->item(i-1, j+1))
+                ++alive_cnt;
+            if(m_model->item(i, j+1))
+                ++alive_cnt;
+            if(m_model->item(i+1, j+1))
+                ++alive_cnt;
+
+            if(m_model->item(i,j)==0)
             {
                 if(alive_cnt == 3)
                 {
-                    model->item(i,j) = 1;
+					m_model->item(i,j) = 1;
                     continue;
                 }
             }
 
-            if(model->item(i,j)==1)
+            if(m_model->item(i,j)==1)
             {
                 if((alive_cnt == 2) || (alive_cnt==3))
                 {
-                    model->item(i,j) = 1;
+					m_model->item(i,j) = 1;
                     continue;
                 }
             }
 
-            model->item(i,j) = 0;
+			m_model->item(i,j) = 0;
         }
     }
 }
@@ -121,20 +120,27 @@ void FieldThread::modelStep()
 //-------------------------------------------------------------------------------------------------
 void FieldThread::modelInit()
 {
-    model->item(0,0) = 1;
-    model->item(0,1) = 1;
-    model->item(0,2) = 1;
+	m_model->item(0,0) = 1;
+	m_model->item(0,1) = 1;
+	m_model->item(0,2) = 1;
 
-    model->item(1,0) = 1;
-    model->item(1,2) = 1;
-    model->item(1,3) = 1;
+	m_model->item(1,0) = 1;
+	m_model->item(1,2) = 1;
+	m_model->item(1,3) = 1;
 
-    model->item(2,1) = 1;
-    model->item(2,2) = 1;
-    model->item(3,2) = 1;
+	m_model->item(2,1) = 1;
+	m_model->item(2,2) = 1;
+	m_model->item(3,2) = 1;
 
-    model->item(0,5) = 1;
-    model->item(1,5) = 1;
+	m_model->item(0,5) = 1;
+	m_model->item(1,5) = 1;
+}
+
+//-------------------------------------------------------------------------------------------------
+void FieldThread::clearModel()
+{
+	QMutexLocker lock(&m_mutex);
+	m_model->clear();
 }
 
 //-------------------------------------------------------------------------------------------------

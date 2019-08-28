@@ -37,7 +37,8 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
         workarea.cpp \
-		config.cpp
+		config.cpp \
+		log.cpp
 
 HEADERS += \
         cellitem.h \
@@ -47,7 +48,8 @@ HEADERS += \
         fieldview.h \
         mainwindow.h \
         workarea.h \
-		config.h
+		config.h \
+		log.h
 
 FORMS += \
         mainwindow.ui

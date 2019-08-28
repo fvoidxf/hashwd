@@ -10,6 +10,7 @@
 #include <QSharedPointer>
 #include <QMutex>
 #include "dynmodel.h"
+#include "config.h"
 
 //=================================================================================================
 class FieldThread : public QThread
@@ -24,17 +25,24 @@ public:
 
     void modelStep();
     void modelInit();
-    void randomModel(int N, int M);
+    void randomModel(int start_i = Config::instance()->randomStartN(), int start_j = Config::instance()->randomStartM(), int i_cnt = Config::instance()->randomCountN(), int j_cnt = Config::instance()->randomCountM());
+	void clearModel();
+
+	void setStepCount(unsigned long steps) { m_stepCount = steps; }
+	unsigned long stepCount()const { return m_stepCount; }
+	static unsigned long GetInfiniteSteps() { return 0xffffffffffffffff; }
+	void setInfiniteSteps() { m_stepCount = GetInfiniteSteps(); }
 
     inline unsigned char randomBool();
 
-	QSharedPointer<DynModel>& getData() { return model; }
+	QSharedPointer<DynModel>& getData() { return m_model; }
 	QMutex* getMutex() { return &m_mutex; }
 
 protected:
     virtual void run()override;
-    QSharedPointer<DynModel> model;
-    mutable bool isRunning;
+    QSharedPointer<DynModel> m_model;
+    mutable bool m_isRunning;
+	mutable unsigned long m_stepCount;
 	QMutex m_mutex;
 
 signals:
