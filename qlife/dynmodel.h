@@ -32,7 +32,7 @@ public:
     void clear();
     unsigned char& operator()(int i, int j);
 
-	unsigned char c_item(int i, int j)const;
+	//unsigned char c_item(int i, int j)const;
 };
 
 //=================================================================================================

@@ -20,9 +20,15 @@ public:
                        const QStyleOptionGraphicsItem *option,
                        QWidget *widget)override;
 
+	void setBackgroundColor(QColor color);
+	void setBorderColor(QColor color);
+
 protected:
     int m_i;
     int m_j;
+
+	QColor m_bgColor;
+	QColor m_brdColor;
 };
 
 //=================================================================================================

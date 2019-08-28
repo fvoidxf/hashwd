@@ -10,6 +10,8 @@
 #include <QMainWindow>
 #include <QGraphicsView>
 #include <QGraphicsScene>
+#include <QMenu>
+#include <QAction>
 
 class FieldThread;
 class FieldScene;
@@ -34,12 +36,25 @@ private:
     FieldThread *m_thread;
 	Workarea *m_area;
 
+	QMenu *m_mainMenu;
+	QMenu *m_controlMenu;
+
+	QAction *m_exitAction;
+
+	QAction *m_startAction;
+	QAction *m_stopAction;
+
 public:
     bool init();
 
 public slots:
     void OnClearCells();
 	void OnDataReady();
+
+	void OnExit();
+
+	void OnStart();
+	void OnStop();
 };
 
 //=================================================================================================

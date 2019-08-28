@@ -25,10 +25,16 @@ public:
 	int width()const { return m_n; }
 	int height()const { return m_m; }
 
+	void setBackgroundColor(QColor color);
+	void setBorderColor(QColor color);
+
 protected:
     QRectF m_rect;
     const int m_n;
     const int m_m;
+
+	QColor m_bgColor;
+	QColor m_brdColor;
 };
 
 //=================================================================================================

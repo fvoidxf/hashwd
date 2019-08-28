@@ -35,7 +35,23 @@ void CellItem::paint(QPainter *painter,
 {
 	QRect rc( m_i*Config::instance()->cellWidth(), m_j*Config::instance()->cellHeight(),
 		      Config::instance()->cellWidth(), Config::instance()->cellHeight() );
+
+	painter->setBrush( QBrush(m_bgColor) );
+	painter->setPen( m_brdColor );
+
 	painter->drawRect(rc);
+}
+
+//-------------------------------------------------------------------------------------------------
+void CellItem::setBackgroundColor(QColor color)
+{
+	m_bgColor = color;
+}
+
+//-------------------------------------------------------------------------------------------------
+void CellItem::setBorderColor(QColor color)
+{
+	m_brdColor = color;
 }
 
 //-------------------------------------------------------------------------------------------------

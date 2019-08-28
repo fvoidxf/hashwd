@@ -18,7 +18,7 @@ FieldThread::FieldThread(QObject *parent)
 
     model->allocate();
     model->clear();
-    randomModel( Config::instance()->columns() /8, Config::instance()->rows() /6 );
+    randomModel( Config::instance()->columns() /4, Config::instance()->rows() /2 );
 }
 
 //-------------------------------------------------------------------------------------------------

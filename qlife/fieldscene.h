@@ -31,11 +31,10 @@ protected:
 	QColor m_borderColor;
 
 public:
-	virtual void fromModel(const DynModel& model);
+	virtual void fromModel(DynModel& model);
 	virtual bool addCell(int i, int j);
 	virtual void clearCells();
 
-	virtual bool update();
 	virtual bool init();
 	virtual void addArea(Workarea *area);
 };

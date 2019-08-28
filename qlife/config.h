@@ -6,6 +6,8 @@
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
+#include <QColor>
+
 //=================================================================================================
 class Config
 {
@@ -17,6 +19,9 @@ protected:
 	int m_columns;
 	int m_rows;
 	int m_thread_timeout_ms;
+	QColor m_bgAreaColor;
+	QColor m_brdColor;
+	QColor m_cellColor;
 
 public:
 	virtual ~Config(){}
@@ -37,6 +42,10 @@ public:
 	int cellWidth()const { return m_fieldWidth / m_columns; }
 	int cellHeight()const { return m_fieldHeight / m_rows; }
 	int threadTimeoutMs()const { return m_thread_timeout_ms; }
+
+	QColor areaBackgroundColor()const { return m_bgAreaColor; }
+	QColor borderColor()const { return m_brdColor; }
+	QColor cellColor()const { return m_cellColor; }
 };
 
 //=================================================================================================

@@ -40,13 +40,13 @@ FieldScene::~FieldScene()
 }
 
 //-------------------------------------------------------------------------------------------------
-void FieldScene::fromModel(const DynModel& model)
+void FieldScene::fromModel(DynModel& model)
 {
 	for (auto i = 0; i < Config::instance()->columns(); i++)
 	{
 		for (auto j = 0; j < Config::instance()->rows(); j++)
 		{
-			if (model.c_item(i, j) == 1)
+			if (model.item(i, j) == 1)
 				addCell(i, j);
 		}
 	}
@@ -55,11 +55,9 @@ void FieldScene::fromModel(const DynModel& model)
 //-------------------------------------------------------------------------------------------------
 bool FieldScene::addCell(int i, int j)
 {
-	QRectF rect(i*Config::instance()->cellWidth(), j*Config::instance()->cellHeight(), Config::instance()->cellWidth(), Config::instance()->cellHeight());
-	QBrush brush(m_cellColor, Qt::BrushStyle::SolidPattern);
-	QPen pen(m_borderColor);
-
 	CellItem *pCell = new CellItem(i, j);
+	pCell->setBackgroundColor( Config::instance()->cellColor() );
+	pCell->setBorderColor( Config::instance()->borderColor() );
 	addItem(pCell);
 	m_cells.push_back(pCell);
 
@@ -75,12 +73,6 @@ void FieldScene::clearCells()
 		delete c;
 	}
 	m_cells.clear();
-}
-
-//-------------------------------------------------------------------------------------------------
-bool FieldScene::update()
-{
-	return true;
 }
 
 //-------------------------------------------------------------------------------------------------

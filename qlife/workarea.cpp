@@ -32,6 +32,9 @@ QRectF Workarea::boundingRect() const
 //-------------------------------------------------------------------------------------------------
 void Workarea::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+	painter->setBrush( QBrush(m_bgColor) );
+	painter->setPen( m_brdColor );
+
     painter->drawRect(m_rect);
 
     for(auto i = 0; i < m_n; i++)
@@ -55,6 +58,18 @@ void Workarea::setSize(qreal w, qreal h)
 {
     m_rect.setWidth(w);
     m_rect.setHeight(h);
+}
+
+//-------------------------------------------------------------------------------------------------
+void Workarea::setBackgroundColor(QColor color)
+{
+	m_bgColor = color;
+}
+
+//-------------------------------------------------------------------------------------------------
+void Workarea::setBorderColor(QColor color)
+{
+	m_brdColor = color;
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -24,6 +24,25 @@ MainWindow::MainWindow(QWidget *parent)
 	setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
 	setFixedSize( Config::instance()->screenWidth(), Config::instance()->screenHeight() );
     setCentralWidget(m_ui->graphicsView);
+
+	m_mainMenu = new QMenu("File", this);
+	menuBar()->addMenu(m_mainMenu);
+
+	m_controlMenu = new QMenu("Control", this);
+	menuBar()->addMenu(m_controlMenu);
+
+	m_exitAction = new QAction("Exit");
+	connect(m_exitAction, SIGNAL(triggered()), this, SLOT(OnExit()));
+
+	m_startAction = new QAction("Start", this);
+	connect(m_startAction, SIGNAL(triggered()), this, SLOT(OnStart()));
+
+	m_stopAction = new QAction("Stop", this);
+	connect(m_stopAction, SIGNAL(triggered()), this, SLOT(OnStop()));
+
+	m_mainMenu->addAction(m_exitAction);
+	m_controlMenu->addAction(m_startAction);
+	m_controlMenu->addAction(m_stopAction);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -48,17 +67,19 @@ bool MainWindow::init()
 	m_scene->init();
 
     m_ui->graphicsView->setScene(m_scene);
+	m_ui->graphicsView->setCacheMode(QGraphicsView::CacheNone);
+	m_ui->graphicsView->setUpdatesEnabled(true);
 
 	QRectF areasz(0, 0, Config::instance()->fieldWidth(), Config::instance()->fieldHeight());
 
-	//m_area = new Workarea(areasz, Config::instance()->columns(), Config::instance()->rows());
-	//m_scene->addArea(m_area);
+	m_area = new Workarea(areasz, Config::instance()->columns(), Config::instance()->rows());
+	m_area->setBackgroundColor( Config::instance()->areaBackgroundColor() );
+	m_area->setBorderColor( Config::instance()->borderColor() );
+	m_scene->addArea(m_area);
 
-    //m_ui->graphicsView->setWorkarea(m_area);
+    m_ui->graphicsView->setWorkarea(m_area);
 
 	m_scene->update();
-
-    m_thread->start();
 
     return true;
 }
@@ -74,40 +95,42 @@ void MainWindow::OnClearCells()
 }
 
 //-------------------------------------------------------------------------------------------------
-/*void MainWindow::OnAddCell(int i, int j)
-{
-#ifdef _DEBUG
-    _CrtMemState _memState;
-    _CrtMemCheckpoint(&_memState);
-    //_CrtDumpMemoryLeaks();
-#endif
-    //Дичайшие утечки, которые дают оба метода
-    field->addCell(i,j);
-    field->update();
-#ifdef _DEBUG
-    _CrtMemDumpAllObjectsSince(&_memState);
-
-#endif
-}*/
-
-//-------------------------------------------------------------------------------------------------
 void MainWindow::OnDataReady()
 {
 	if (!m_scene)
 		return;
 
-	QMutexLocker lock(m_thread->getMutex());
 	for (auto i = 0; i < Config::instance()->columns(); i++)
 	{
 		for (auto j = 0; j < Config::instance()->rows(); j++)
 		{
 			if (m_thread->getData()->item(i, j) == 1)
 			{
+				QMutexLocker lock(m_thread->getMutex());
 				m_scene->addCell(i, j);
+				lock.unlock();
 				m_scene->update();
 			}
 		}
 	}
+}
+
+//-------------------------------------------------------------------------------------------------
+void MainWindow::OnExit()
+{
+	qApp->closeAllWindows();
+}
+
+//-------------------------------------------------------------------------------------------------
+void MainWindow::OnStart()
+{
+	m_thread->start();
+}
+
+//-------------------------------------------------------------------------------------------------
+void MainWindow::OnStop()
+{
+	m_thread->terminate();
 }
 
 //-------------------------------------------------------------------------------------------------
