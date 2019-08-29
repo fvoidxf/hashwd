@@ -30,6 +30,7 @@ CONFIG += c++11
 
 SOURCES += \
         cellitem.cpp \
+		control.cpp \
         dynmodel.cpp \
         fieldscene.cpp \
         fieldthread.cpp \
@@ -42,6 +43,7 @@ SOURCES += \
 
 HEADERS += \
         cellitem.h \
+		control.h \
         dynmodel.h \
         fieldscene.h \
         fieldthread.h \

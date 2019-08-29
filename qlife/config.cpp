@@ -25,6 +25,8 @@
 #define VERSION_MIDLE		5
 #define VERSION_MINOR		0
 
+#define TERMINATE_THREAD_TIMEOUT 1500
+
 //-------------------------------------------------------------------------------------------------
 Config* Config::m_self = nullptr;
 
@@ -49,6 +51,7 @@ Config::Config()
 	,m_minVer(VERSION_MINOR)
 	,m_midVer(VERSION_MIDLE)
 	,m_majVer(VERSION_MAJOR)
+	,m_threadTerminateMsTimeout(TERMINATE_THREAD_TIMEOUT)
 {
 	static_assert(COLUMNS > 2, "columns must be greater 2");
 	static_assert(ROWS > 2, "rows must be greater 2");

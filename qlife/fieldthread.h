@@ -24,7 +24,6 @@ public:
     void setStopFlag();
 
     void modelStep();
-    void modelInit();
     void randomModel(int start_i = Config::instance()->randomStartN(), int start_j = Config::instance()->randomStartM(), int i_cnt = Config::instance()->randomCountN(), int j_cnt = Config::instance()->randomCountM());
 	void clearModel();
 

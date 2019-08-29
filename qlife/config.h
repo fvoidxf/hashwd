@@ -44,6 +44,8 @@ protected:
 
 	WorkMode m_workMode;
 
+	unsigned long m_threadTerminateMsTimeout;
+
 public:
 	virtual ~Config(){}
 
@@ -86,6 +88,8 @@ public:
 	int majVer()const { return m_majVer; }
 
 	QString version()const;
+
+	unsigned long threadTerminateTimeoutMs()const { return m_threadTerminateMsTimeout; }
 };
 
 //=================================================================================================
