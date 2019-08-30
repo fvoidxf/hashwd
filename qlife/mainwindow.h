@@ -13,9 +13,10 @@
 #include <QMenu>
 #include <QAction>
 
-class FieldThread;
+//class FieldThread;
 class FieldScene;
 class Workarea;
+class Control;
 
 namespace Ui {
     class MainWindow;
@@ -33,8 +34,8 @@ public:
 private:
     Ui::MainWindow *m_ui;
     FieldScene *m_scene;
-    FieldThread *m_thread;
 	Workarea *m_area;
+	Control *m_ctrl;
 
 	QMenu *m_mainMenu;
 	QMenu *m_controlMenu;

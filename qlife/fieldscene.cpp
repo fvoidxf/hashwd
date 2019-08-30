@@ -16,7 +16,6 @@
 FieldScene::FieldScene(QObject *parent)
     :QGraphicsScene (parent)
 	,m_area(nullptr)
-	,m_thread(nullptr)
 {
 
 }
@@ -25,7 +24,6 @@ FieldScene::FieldScene(QObject *parent)
 FieldScene::FieldScene(const QRectF &sceneRect, QObject *parent)
 	:QGraphicsScene(sceneRect, parent)
 	,m_area(nullptr)
-	, m_thread(nullptr)
 {
 
 }
@@ -34,7 +32,6 @@ FieldScene::FieldScene(const QRectF &sceneRect, QObject *parent)
 FieldScene::FieldScene(qreal x, qreal y, qreal width, qreal height, QObject *parent)
 	:QGraphicsScene(x, y, width, height, parent)
 	,m_area(nullptr)
-	, m_thread(nullptr)
 {
 
 }
@@ -71,9 +68,9 @@ bool FieldScene::addCell(int i, int j)
 	}
 	else if (Config::instance()->currentMode() == Config::EditMode)
 	{
-		if (!m_thread)
-			return false;
-		m_thread->getData()->item(i, j) = 1;
+		//if (!m_thread)
+		//	return false;
+		//m_thread->getData()->item(i, j) = 1;
 	}
 
 	return true;
@@ -162,9 +159,9 @@ void FieldScene::_internalRemoveCell(QGraphicsItem* pCell)
 }
 
 //-------------------------------------------------------------------------------------------------
-void FieldScene::setDataThread(FieldThread* thread)
-{
-	m_thread = thread;
-}
+//void FieldScene::setDataThread(FieldThread* thread)
+//{
+	//m_thread = thread;
+//}
 
 //-------------------------------------------------------------------------------------------------

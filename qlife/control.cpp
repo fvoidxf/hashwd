@@ -9,11 +9,20 @@
 #include "fieldthread.h"
 
 //-------------------------------------------------------------------------------------------------
-Control::Control()
+Control::Control(QObject *parent)
 	:m_model( new DynModel( Config::instance()->columns(), Config::instance()->rows() ) )
 	,m_thread( new FieldThread )
+	,m_mutex(new QMutex)
 {
+	m_model->allocate();
+	m_model->clear();
 
+	time_t t;
+	time(&t);
+	srand(t);
+
+	m_thread->setMutex(m_mutex);
+	m_thread->setData(m_model);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -31,6 +40,30 @@ Control::~Control()
 			delete m_thread;
 		}
 	}
+}
+
+//-------------------------------------------------------------------------------------------------
+bool Control::init()
+{
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+void Control::fillRandom()
+{
+	m_thread->randomModel();
+}
+
+//-------------------------------------------------------------------------------------------------
+void Control::startThread()
+{
+	m_thread->start();
+}
+
+//-------------------------------------------------------------------------------------------------
+void Control::clearModel()
+{
+	m_thread->clearModel();
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -34,15 +34,17 @@ public:
 
     inline unsigned char randomBool();
 
-	QSharedPointer<DynModel>& getData() { return m_model; }
-	QMutex* getMutex() { return &m_mutex; }
+	DynModel* getData() { return m_model; }
+
+	void setMutex(QMutex* mutex) { m_mutex = mutex; }
+	void setData(DynModel* data) { m_model = data; }
 
 protected:
     virtual void run()override;
-    QSharedPointer<DynModel> m_model;
+    DynModel *m_model;
     mutable bool m_isRunning;
 	mutable unsigned long long m_stepCount;
-	QMutex m_mutex;
+	QMutex *m_mutex;
 
 signals:
     void clearCells();

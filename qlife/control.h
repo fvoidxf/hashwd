@@ -6,19 +6,32 @@
 #ifndef __CONTROL_H__
 #define __CONTROL_H__
 
+#include <QObject>
+
 class DynModel;
 class FieldThread;
+class QMutex;
 
 //=================================================================================================
-class Control
+class Control : public QObject
 {
+	Q_OBJECT
+
 public:
-	Control();
+	Control(QObject *parent = nullptr);
 	virtual ~Control();
 
 protected:
 	DynModel				*m_model;
+	QMutex					*m_mutex;
 	FieldThread				*m_thread;
+
+public:
+	bool init();
+
+	void fillRandom();
+	void startThread();
+	void clearModel();
 };
 
 //=================================================================================================
