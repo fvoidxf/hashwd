@@ -5,17 +5,19 @@
 */
 #include <QDebug>
 #include <QGraphicsSceneMouseEvent>
+#include <QMutexLocker>
 #include "dynmodel.h"
 #include "workarea.h"
 #include "fieldscene.h"
-#include "fieldthread.h"
 #include "cellitem.h"
 #include "config.h"
+#include "fieldthread.h"
 
 //-------------------------------------------------------------------------------------------------
 FieldScene::FieldScene(QObject *parent)
     :QGraphicsScene (parent)
 	,m_area(nullptr)
+	,m_thread(nullptr)
 {
 
 }
@@ -24,6 +26,7 @@ FieldScene::FieldScene(QObject *parent)
 FieldScene::FieldScene(const QRectF &sceneRect, QObject *parent)
 	:QGraphicsScene(sceneRect, parent)
 	,m_area(nullptr)
+	,m_thread(nullptr)
 {
 
 }
@@ -32,6 +35,7 @@ FieldScene::FieldScene(const QRectF &sceneRect, QObject *parent)
 FieldScene::FieldScene(qreal x, qreal y, qreal width, qreal height, QObject *parent)
 	:QGraphicsScene(x, y, width, height, parent)
 	,m_area(nullptr)
+	,m_thread(nullptr)
 {
 
 }
@@ -40,6 +44,12 @@ FieldScene::FieldScene(qreal x, qreal y, qreal width, qreal height, QObject *par
 FieldScene::~FieldScene()
 {
 
+}
+
+//-------------------------------------------------------------------------------------------------
+void FieldScene::setThread(FieldThread* thread)
+{
+	m_thread = thread;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -58,20 +68,16 @@ void FieldScene::fromModel(DynModel& model)
 //-------------------------------------------------------------------------------------------------
 bool FieldScene::addCell(int i, int j)
 {
-	if (Config::instance()->currentMode() == Config::GameMode)
+	CellItem *pCell = new CellItem(i, j);
+	pCell->setBackgroundColor( Config::instance()->cellColor() );
+	pCell->setBorderColor( Config::instance()->borderColor() );
+	addItem(pCell);
+	if (m_thread)
 	{
-		CellItem *pCell = new CellItem(i, j);
-		pCell->setBackgroundColor(Config::instance()->cellColor());
-		pCell->setBorderColor(Config::instance()->borderColor());
-		addItem(pCell);
-		m_cells.push_back(pCell);
+		QMutexLocker lock(m_thread->getMutex());
+		m_thread->getData()->item(i, j) = 1;
 	}
-	else if (Config::instance()->currentMode() == Config::EditMode)
-	{
-		//if (!m_thread)
-		//	return false;
-		//m_thread->getData()->item(i, j) = 1;
-	}
+	m_cells.push_back(pCell);
 
 	return true;
 }
@@ -79,14 +85,17 @@ bool FieldScene::addCell(int i, int j)
 //-------------------------------------------------------------------------------------------------
 void FieldScene::clearCells()
 {
-	qDebug() << "FieldScene::clearCells() cells size: " << m_cells.size();
-	for (CellItem* c : m_cells)
+	/*for (CellItem* c : m_cells)
 	{
-		_internalRemoveCell(c);
+		if (m_thread)
+		{
+			QMutexLocker lock(m_thread->getMutex());
+			m_thread->getData()->item(c->i(), c->j()) = 0;
+		}
 		removeItem(c);
-		//delete c;
+		delete c;
 	}
-	//m_cells.clear();
+	m_cells.clear();*/
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -126,10 +135,8 @@ void FieldScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 			}
 			if (pRM)
 			{
-				_internalRemoveCell(pRM);
 				removeItem(pRM);
 				delete pRM;
-				qDebug() << "mousePressEvent remove item, cells size: " << m_cells.size();
 			}
 			else
 			{
@@ -137,31 +144,12 @@ void FieldScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 				int j = 0;
 				Config::instance()->scenePosToIndex(pos, i, j);
 				addCell(i, j);
-				qDebug() << "Added cell: " << i << ", " << j;
 			}
+			if (_items.empty())
+				qDebug() << "No cells founded!";
 		}
 		QGraphicsScene::mousePressEvent(event);
 	}
 }
-
-//-------------------------------------------------------------------------------------------------
-void FieldScene::_internalRemoveCell(QGraphicsItem* pCell)
-{
-	auto index = 0;
-	for (auto cell : m_cells)
-	{
-		if (pCell == cell)
-		{
-			m_cells.remove(index++);
-			return;
-		}
-	}
-}
-
-//-------------------------------------------------------------------------------------------------
-//void FieldScene::setDataThread(FieldThread* thread)
-//{
-	//m_thread = thread;
-//}
 
 //-------------------------------------------------------------------------------------------------

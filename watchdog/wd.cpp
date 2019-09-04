@@ -1,11 +1,4 @@
-/*
-* created by fv01dxf@gmail.com
-* General Public License v3 
-*         2019
-*/
-
 #include "stdafx.h"
-#include "hash.h"
 #include "db.h"
 #include "filedata.h"
 #include "filecontainer.h"
@@ -15,10 +8,9 @@
 
 void usage(char *program)
 {
-	std::cout << "usage: " << program << "[-vph] -c md5 -s SESSION_NAME -d DIRECTORY" << std::endl;
+	std::cout << "usage: " << program << "-s SESSION_NAME -d DIRECTORY" << std::endl;
 	std::cout << "example: " << program << " -s Session1 -d C:\\temp" << std::endl;
 	std::cout << "options: -v verbose output, -h help, -p parallel Execution" << std::endl;
-	std::cout << "-c hash alghorytm, available md5, sha256, sha384, sha512" << std::endl;
 }
 
 int main(int argc, char *argv[])
@@ -30,9 +22,6 @@ int main(int argc, char *argv[])
 
 	char *session = NULL;
 	char *directory = NULL;
-	char *hashing = NULL;
-
-	IHash::HashType hashType = IHash::Undef;
 
 	if(argc == 1)
 	{
@@ -40,7 +29,7 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
-	char *options="c:s:d:vhp";
+	char *options="s:d:vhp";
 	int opt = 0;
 	while((opt = getopt(argc, argv, options)) != -1)
 	{
@@ -61,9 +50,6 @@ int main(int argc, char *argv[])
 		case 'p':
 			isParallel = true;
 			break;
-		case 'c':
-			hashing = optarg;
-			break;
 		}
 	}
 
@@ -82,19 +68,6 @@ int main(int argc, char *argv[])
 	if(!directory)
 	{
 		std::cerr << "Error: directory name is not set!\r\n";
-		return 0;
-	}
-
-	if (!hashing)
-	{
-		std::cerr << "Error: hashing alghorytm is not set!\r\n";
-		return 0;
-	}
-
-	hashType = IHash::typeFromStr(hashing);
-	if (hashType == IHash::Undef)
-	{
-		std::cerr << "Error: unknown hashing alghorytm!\r\n";
 		return 0;
 	}
 
@@ -128,25 +101,21 @@ int main(int argc, char *argv[])
 
 		if(isParallel)
 		{
-			MTTask task(directory, hashType);
+			MTTask task(directory);
 
 			task.startInputThread();
-			//task.InputThreadJoin();
+			task.InputThreadJoin();
 
 			task.startGenerateThread();
-			//task.GenerateThreadJoin();
+			task.GenerateThreadJoin();
 
 			task.startOutputThread();
-			//task.OutputThreadJoin();
-
-			task.InputThreadJoin();		
-			task.GenerateThreadJoin();
 			task.OutputThreadJoin();
 
 			return 0;
 		}
 
-		if(bIsExistsSession)
+		/*if(bIsExistsSession)
 		{
 			std::list<IFDContainer::DIFFS> diffList;
 
@@ -165,7 +134,7 @@ int main(int argc, char *argv[])
 			if(diffList.empty())
 				std::cout << "No changes founded" << std::endl;
 		}
-		else
+		else*/
 		{
 			strg->create_session();
 			strg->walk();

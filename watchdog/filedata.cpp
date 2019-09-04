@@ -1,12 +1,5 @@
-/*
-* created by fv01dxf@gmail.com
-* General Public License v3 
-*         2019
-*/
-
 #include "stdafx.h"
 #include "filedata.h"
-#include "hash.h"
 
 #pragma warning( disable: 4244 )
 
@@ -17,11 +10,11 @@ FileData::FileData()
 }
 
 //-------------------------------------------------------------------------------------------------
-FileData::FileData(const std::string& fileName, time_t *_t /*= NULL*/, const std::string& md5 /*= ""*/)
+FileData::FileData(const std::string& fileName, time_t *_t /*= NULL*/, const std::string& hash /*= ""*/)
 	:m_filename(fileName)
 {
-	if (!md5.empty())
-		m_md5 = md5;
+	if (!hash.empty())
+		m_hash = hash;
 	if (_t)
 		m_time = *_t;
 }
@@ -45,7 +38,7 @@ void FileData::setName(const std::string& name)
 }
 
 //-------------------------------------------------------------------------------------------------
-std::string FileData::make_md5()
+std::string FileData::make_hash(IHashData::Type type)
 {
 	std::string md5str;
 
@@ -56,20 +49,29 @@ std::string FileData::make_md5()
 	if(!fileSize)
 		return md5str;
 
-	boost::shared_array<char> pArr(new char[fileSize]);
+	boost::shared_array<unsigned char> pArr(new unsigned char[fileSize]);
 
 	while(!_in.eof()){
-		_in.read(  pArr.get(), fileSize);
+		_in.read( reinterpret_cast<char*>( pArr.get() ), fileSize);
 	}
 
 	_in.close();
 
-	boost::shared_ptr<IHash> pHash(new Md5Hash);
-	pHash->init();
-	pHash->update(pArr, fileSize);
-	pHash->finalize();
-
-	m_md5 = pHash->string();
+	IHashData *pHashing = IHashData::create(type);
+	if(pHashing)
+	{
+		bool bRes = pHashing->init();
+		if(bRes)
+		{
+			bRes = pHashing->hash(pArr.get(), fileSize);
+			if(bRes)
+			{
+				pHashing->finish();
+				m_hash = pHashing->str();
+			}
+		}
+		delete pHashing;
+	}
 
 	return md5str;
 }
@@ -91,15 +93,15 @@ std::streampos FileData::fileSize()const
 }
 
 //-------------------------------------------------------------------------------------------------
-bool FileData::HaveMD5()const
+bool FileData::HaveHash()const
 {
-	return !m_md5.empty();
+	return !m_hash.empty();
 }
 
 //-------------------------------------------------------------------------------------------------
-std::string FileData::md5()const
+std::string FileData::hash()const
 {
-	return m_md5;
+	return m_hash;
 }
 
 //-------------------------------------------------------------------------------------------------

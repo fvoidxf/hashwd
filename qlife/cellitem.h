@@ -23,6 +23,9 @@ public:
 	void setBackgroundColor(QColor color);
 	void setBorderColor(QColor color);
 
+	int i()const { return m_i; }
+	int j()const { return m_j; }
+
 protected:
     int m_i;
     int m_j;

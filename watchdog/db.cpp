@@ -1,9 +1,3 @@
-/*
-* created by fv01dxf@gmail.com
-* General Public License v3 
-*         2019
-*/
-
 #include "stdafx.h"
 #include "db.h"
 #include "filedata.h"
@@ -13,7 +7,7 @@
 
 #define SERVICE_TABLE					"sqlite_master"
 
-#define INSERT_STMT_PREPARE				"INSERT INTO %s (filename,time,md5) VALUES(?,?,?)"
+#define INSERT_STMT_PREPARE		"INSERT INTO %s (filename,time,md5) VALUES(?,?,?)"
 #define CREATE_TABLE					"CREATE TABLE %s (id INTEGER PRIMARY KEY ASC AUTOINCREMENT UNIQUE NOT NULL DEFAULT (1), filename VARCHAR(1024), time DATETIME, md5 VARCHAR(64));"
 #define GET_SESSIONS					"SELECT * FROM sqlite_master WHERE type=\'table\'"
 #define SELECT_MAIN						"SELECT filename,time,md5 FROM %s"

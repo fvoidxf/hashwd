@@ -31,8 +31,6 @@ public:
     void free();
     void clear();
     unsigned char& operator()(int i, int j);
-
-	//unsigned char c_item(int i, int j)const;
 };
 
 //=================================================================================================

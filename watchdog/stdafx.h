@@ -1,9 +1,3 @@
-/*
-* created by fv01dxf@gmail.com
-* General Public License v3 
-*         2019
-*/
-
 #pragma once
 #include <stdlib.h>
 #include <list>
@@ -13,8 +7,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <sstream>
-#include <openssl/md5.h>
-#include <openssl/sha.h>
+#include <Openssl/md5.h>
 #include <fstream>
 #include <thread>
 #include <chrono>
@@ -31,3 +24,9 @@
 
 #include "sqlite3.h"
 #include "getopt.h"
+#include "gosthash.h"
+
+#include "gosthash.h"
+#include "gosthash2012.h"
+#include "gost89.h"
+#include "hashdata.h"

@@ -27,7 +27,8 @@ public:
 protected:
 	Workarea *m_area;
 	QVector<CellItem*> m_cells;
-	//FieldThread *m_thread;
+	FieldThread *m_thread;
+
 
 	QColor m_cellColor;
 	QColor m_borderColor;
@@ -40,12 +41,10 @@ public:
 	virtual bool init();
 	virtual void addArea(Workarea *area);
 
-	//void setDataThread(FieldThread* thread);
+	void setThread(FieldThread* thread);
 
 protected:
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)override;
-
-	void _internalRemoveCell(QGraphicsItem* pCell);
 };
 
 //=================================================================================================

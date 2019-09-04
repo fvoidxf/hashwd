@@ -9,12 +9,16 @@
 //-------------------------------------------------------------------------------------------------
 FieldThread::FieldThread(QObject *parent)
     :QThread(parent)
-    ,m_model( nullptr )
+    ,m_model(new DynModel( Config::instance()->columns() , Config::instance()->rows() ))
     ,m_isRunning(true)
 	,m_stepCount(GetInfiniteSteps())
-	,m_mutex(nullptr)
 {
+    time_t t;
+    time(&t);
+    srand( t );
 
+    m_model->allocate();
+    m_model->clear();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -26,8 +30,6 @@ FieldThread::~FieldThread()
 //-------------------------------------------------------------------------------------------------
 void FieldThread::randomModel(int start_i, int start_j, int i_cnt, int j_cnt)
 {
-	if (!m_model)
-		return;
 	for (auto i = start_i; i < (start_i + i_cnt); i++)
 	{
 		for (auto j = start_j; j < (start_j + j_cnt); j++)
@@ -52,13 +54,10 @@ unsigned char FieldThread::randomBool()
 //-------------------------------------------------------------------------------------------------
 void FieldThread::run()
 {
-	if (!m_mutex)
-		return;
-
     while(m_isRunning && m_stepCount)
     {
         emit clearCells();
-		QMutexLocker lock(m_mutex);
+		QMutexLocker lock(&m_mutex);
         modelStep();
 		lock.unlock();
 		emit dataReady();
@@ -71,9 +70,6 @@ void FieldThread::run()
 //-------------------------------------------------------------------------------------------------
 void FieldThread::modelStep()
 {
-	if (!m_model)
-		return;
-
     for(auto i = 1; i < Config::instance()->columns() - 1; i++)
     {
         for(auto j = 1; j < Config::instance()->rows() - 1; j++)
@@ -122,13 +118,29 @@ void FieldThread::modelStep()
 }
 
 //-------------------------------------------------------------------------------------------------
+void FieldThread::modelInit()
+{
+	QMutexLocker lock(&m_mutex);
+	m_model->item(0,0) = 1;
+	m_model->item(0,1) = 1;
+	m_model->item(0,2) = 1;
+
+	m_model->item(1,0) = 1;
+	m_model->item(1,2) = 1;
+	m_model->item(1,3) = 1;
+
+	m_model->item(2,1) = 1;
+	m_model->item(2,2) = 1;
+	m_model->item(3,2) = 1;
+
+	m_model->item(0,5) = 1;
+	m_model->item(1,5) = 1;
+}
+
+//-------------------------------------------------------------------------------------------------
 void FieldThread::clearModel()
 {
-	if (!m_mutex)
-		return;
-	QMutexLocker lock(m_mutex);
-	if (!m_model)
-		return;
+	QMutexLocker lock(&m_mutex);
 	m_model->clear();
 }
 

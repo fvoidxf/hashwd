@@ -12,7 +12,6 @@
 #include "fieldview.h"
 #include "config.h"
 #include "workarea.h"
-#include "control.h"
 
 //-------------------------------------------------------------------------------------------------
 MainWindow::MainWindow(QWidget *parent)
@@ -59,10 +58,6 @@ MainWindow::MainWindow(QWidget *parent)
 	m_controlMenu->addAction(m_stopAction);
 	m_controlMenu->addAction(m_clearFieldAction);
 
-	QString sTitle = windowTitle();
-	sTitle += QString(" %1").arg(Config::instance()->version());
-	setWindowTitle(sTitle);
-
 	Config::instance()->setGameMode();
 	statusBar()->showMessage("Game mode");
 }
@@ -70,25 +65,24 @@ MainWindow::MainWindow(QWidget *parent)
 //-------------------------------------------------------------------------------------------------
 MainWindow::~MainWindow()
 {
-	//if (m_thread) {
-	//	m_thread->setStopFlag();
-	//	m_thread->wait();
-	//}
+	if (m_thread) {
+		m_thread->setStopFlag();
+		m_thread->wait();
+	}
     delete m_ui;
 }
 
 //-------------------------------------------------------------------------------------------------
 bool MainWindow::init()
 {
-	//m_thread = new FieldThread(this);
-	m_ctrl = new Control(this);
-	m_ctrl->init();
+	m_thread = new FieldThread(this);
 
-	//connect(m_thread, SIGNAL(clearCells()), this, SLOT(OnClearCells()));
-	//connect(m_thread, SIGNAL(dataReady()), this, SLOT(OnDataReady()));
+	connect(m_thread, SIGNAL(clearCells()), this, SLOT(OnClearCells()));
+	connect(m_thread, SIGNAL(dataReady()), this, SLOT(OnDataReady()));
 
     m_scene = new FieldScene(this);
 	m_scene->init();
+	m_scene->setThread(m_thread);
 
     m_ui->graphicsView->setScene(m_scene);
 	m_ui->graphicsView->setCacheMode(QGraphicsView::CacheNone);
@@ -128,13 +122,11 @@ void MainWindow::OnDataReady()
 	{
 		for (auto j = 0; j < Config::instance()->rows(); j++)
 		{
-			//if (m_thread->getData()->item(i, j) == 1)
-			//{
-			//	QMutexLocker lock(m_thread->getMutex());
-			//	m_scene->addCell(i, j);
-			//	lock.unlock();
-			//	m_scene->update();
-			//}
+			if (m_thread->getData()->item(i, j) == 1)
+			{
+				m_scene->addCell(i, j);
+				m_scene->update();
+			}
 		}
 	}
 }
@@ -148,20 +140,20 @@ void MainWindow::OnExit()
 //-------------------------------------------------------------------------------------------------
 void MainWindow::OnStart()
 {
-	//if(Config::instance()->currentMode() == Config::GameMode)
-	//	m_thread->start();
+	if(Config::instance()->currentMode() == Config::GameMode)
+		m_thread->start();
 }
 
 //-------------------------------------------------------------------------------------------------
 void MainWindow::OnStop()
 {
-	//m_thread->terminate();
+	m_thread->terminate();
 }
 
 //-------------------------------------------------------------------------------------------------
 void MainWindow::OnChangeMode()
 {
-	/*if (Config::instance()->currentMode() == Config::GameMode)
+	if (Config::instance()->currentMode() == Config::GameMode)
 	{
 		Config::instance()->setEditMode();
 		statusBar()->showMessage("Edit mode");
@@ -172,7 +164,7 @@ void MainWindow::OnChangeMode()
 	{
 		Config::instance()->setGameMode();
 		statusBar()->showMessage("Game mode");
-	}*/
+	}
 }
 
 //------------------------------------------------------------------------------------------------
@@ -181,7 +173,6 @@ void MainWindow::OnClearField()
 	if (m_scene)
 	{
 		m_scene->clearCells();
-		m_ctrl->clearModel();
 		m_scene->update();
 	}
 }
@@ -189,12 +180,12 @@ void MainWindow::OnClearField()
 //------------------------------------------------------------------------------------------------
 void MainWindow::OnFillRandom()
 {
-	if (m_scene && m_ctrl)
+	if (m_scene)
 	{
 		m_scene->clearCells();
-		m_ctrl->fillRandom();
-		m_ctrl->startThread();
-		m_scene->update();
+		m_thread->randomModel();
+		m_thread->start();
+		//m_scene->update();
 	}
 }
 

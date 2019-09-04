@@ -48,16 +48,6 @@ unsigned char& DynModel::operator()(int i, int j)
 }
 
 //-------------------------------------------------------------------------------------------------
-/*unsigned char DynModel::c_item(int i, int j)const
-{
-	if ((i < 0) || (i >= n))
-		throw std::range_error("invalid i index");
-	if ((j < 0) || (j >= m))
-		throw std::range_error("invalid j index");
-	return data[i][j];
-}*/
-
-//-------------------------------------------------------------------------------------------------
 void DynModel::free()
 {
     for(auto i = 0; i < n; i++)

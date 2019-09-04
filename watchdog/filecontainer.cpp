@@ -1,9 +1,3 @@
-/*
-* created by fv01dxf@gmail.com
-* General Public License v3 
-*         2019
-*/
-
 #include "stdafx.h"
 #include "db.h"
 #include "filedata.h"
@@ -64,7 +58,7 @@ void FDContainer::show()
 {
 	for(boost::shared_ptr<IFileData> fd : m_list)
 	{
-		std::cout << fd->fullname() << " MD5: " << fd->md5()  << std::endl;
+		std::cout << fd->fullname() << " HASH: " << fd->hash()  << std::endl;
 	}
 }
 
@@ -77,7 +71,7 @@ void FDContainer::check_files()
 		{
 			try
 			{
-				fd->make_md5();
+					fd->make_hash();
 			}
 			catch(std::exception &e)
 			{
@@ -171,12 +165,12 @@ void FDContainer::diff(std::list<DIFFS>& diffList)
 		{
 			if (fd->fullname() == fdd->fullname())
 			{
-				if (fd->md5() != fdd->md5())
+				if (fd->hash() != fdd->hash())
 				{
 					DIFFS dss;
 					dss.filename = fd->fullname();
-					dss.wasMD5 = fdd->md5();
-					dss.nowMD5 = fd->md5();
+					dss.wasMD5 = fdd->hash();
+					dss.nowMD5 = fd->hash();
 					diffList.push_back(dss);
 				}
 			}
@@ -213,7 +207,7 @@ void FDContainer::saveSession()
 {
 	for (boost::shared_ptr<IFileData> fd : m_list)
 	{
-		m_db.addData(fd->fullname(), fd->time(), fd->md5());
+		m_db.addData(fd->fullname(), fd->time(), fd->hash());
 	}
 }
 
