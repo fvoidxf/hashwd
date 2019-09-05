@@ -26,10 +26,26 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+		cellitem.cpp \
+		commands.cpp \
+		config.cpp \
+		dynmodel.cpp \
+		fieldscene.cpp \
+		fieldview.cpp \
+		workarea.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+		cellitem.h \
+		commands.h \
+		config.h \
+		dynmodel.h \
+		fieldscene.h \
+		fieldview.h \
+		icommand.h \
+		strings.h \
+		workarea.h
 
 FORMS += \
         mainwindow.ui

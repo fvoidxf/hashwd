@@ -101,12 +101,12 @@ void MainWindow::_update()
 		if (Config::instance()->currentLanguage() == Config::Russian)
 		{
 			m_changeModeAction->setText(QTLIFE_ACTION_GAMEMODE_RU);
-			OnUpdateStatusMsg(QTLIFE_STATUSMSG_GAMEMODE_RU);
+			OnUpdateStatusMsg(QTLIFE_STATUSMSG_EDITMODE_RU);
 		}
 		else
 		{
 			m_changeModeAction->setText(QTLIFE_ACTION_GAMEMODE_EN);
-			OnUpdateStatusMsg(QTLIFE_STATUSMSG_GAMEMODE_EN);
+			OnUpdateStatusMsg(QTLIFE_STATUSMSG_EDITMODE_EN);
 		}
 	}
 	else
@@ -114,12 +114,12 @@ void MainWindow::_update()
 		if (Config::instance()->currentLanguage() == Config::Russian)
 		{
 			m_changeModeAction->setText(QTLIFE_ACTION_EDITMODE_RU);
-			OnUpdateStatusMsg(QTLIFE_STATUSMSG_EDITMODE_RU);
+			OnUpdateStatusMsg(QTLIFE_STATUSMSG_GAMEMODE_RU);
 		}
 		else
 		{
 			m_changeModeAction->setText(QTLIFE_ACTION_EDITMODE_EN);
-			OnUpdateStatusMsg(QTLIFE_STATUSMSG_EDITMODE_EN);
+			OnUpdateStatusMsg(QTLIFE_STATUSMSG_GAMEMODE_EN);
 		}
 	}
 }

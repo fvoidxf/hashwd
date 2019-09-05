@@ -4,6 +4,7 @@
 #include "icommand.h"
 
 class FieldScene;
+class TSModel;
 
 //=================================================================================================
 class ExitCommand : public ICommand
@@ -45,12 +46,14 @@ public:
 	virtual void exec()override;
 
 	void setScene(FieldScene *scene) { m_scene = scene; }
+	void setModel(TSModel* model) { m_model = model; }
 
 private:
 	int m_i;
 	int m_j;
 
-	FieldScene *m_scene;
+	FieldScene	*m_scene;
+	TSModel		*m_model;
 };
 
 //=================================================================================================
@@ -63,12 +66,14 @@ public:
 	virtual void exec()override;
 
 	void setScene(FieldScene *scene) { m_scene = scene; }
+	void setModel(TSModel* model) { m_model = model; }
 
 private:
 	int m_i;
 	int m_j;
 
-	FieldScene *m_scene;
+	FieldScene	*m_scene;
+	TSModel		*m_model;
 };
 
 //=================================================================================================

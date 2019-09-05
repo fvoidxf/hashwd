@@ -11,6 +11,9 @@
 #include <vld.h>
 #endif
 
+#include <QMutex>
+#include <QMutexLocker>
+
 //=================================================================================================
 class DynModel
 {
@@ -31,6 +34,22 @@ public:
 	void free();
 	void clear();
 	unsigned char& operator()(int i, int j);
+};
+
+//=================================================================================================
+class TSModel : public DynModel
+{
+protected:
+	QMutex		m_mtx;
+
+public:
+	QMutex * mutex() { return &m_mtx; }
+	~TSModel(){}
+	TSModel(int N, int M):DynModel(N,M)
+	{
+		allocate();
+		clear();
+	}
 };
 
 //=================================================================================================

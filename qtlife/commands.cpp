@@ -4,6 +4,7 @@
 #include "config.h"
 #include "strings.h"
 #include "fieldscene.h"
+#include "dynmodel.h"
 
 //-------------------------------------------------------------------------------------------------
 ICommand* ICommand::create(Type cmdType)
@@ -71,12 +72,16 @@ void AboutCommand::exec()
 void AddCellCommand::exec()
 {
 	m_scene->addCell(m_i, m_j);
+	QMutexLocker lock(m_model->mutex());
+	m_model->item(m_i, m_i) = 1;
 }
 
 //-------------------------------------------------------------------------------------------------
 void RemoveCellCommand::exec()
 {
 	m_scene->removeCell(m_i, m_j);
+	QMutexLocker lock(m_model->mutex());
+	m_model->item(m_i, m_j);
 }
 
 //-------------------------------------------------------------------------------------------------

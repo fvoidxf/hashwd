@@ -17,34 +17,38 @@
 FieldScene::FieldScene(QObject *parent)
 	:QGraphicsScene(parent)
 	, m_area(nullptr)
+	, m_model(nullptr)
 {
-
+	m_model = new TSModel(Config::instance()->columns(), Config::instance()->rows());
 }
 
 //-------------------------------------------------------------------------------------------------
 FieldScene::FieldScene(const QRectF &sceneRect, QObject *parent)
 	:QGraphicsScene(sceneRect, parent)
 	, m_area(nullptr)
+	, m_model(nullptr)
 {
-
+	m_model = new TSModel(Config::instance()->columns(), Config::instance()->rows());
 }
 
 //-------------------------------------------------------------------------------------------------
 FieldScene::FieldScene(qreal x, qreal y, qreal width, qreal height, QObject *parent)
 	:QGraphicsScene(x, y, width, height, parent)
 	, m_area(nullptr)
+	, m_model(nullptr)
 {
-
+	m_model = new TSModel(Config::instance()->columns(), Config::instance()->rows());
 }
 
 //-------------------------------------------------------------------------------------------------
 FieldScene::~FieldScene()
 {
-
+	if (m_model)
+		delete m_model;
 }
 
 //-------------------------------------------------------------------------------------------------
-void FieldScene::fromModel(DynModel& model)
+void FieldScene::fromModel(TSModel& model)
 {
 	for (auto i = 0; i < Config::instance()->columns(); i++)
 	{
@@ -71,6 +75,23 @@ bool FieldScene::addCell(int i, int j)
 //-------------------------------------------------------------------------------------------------
 bool FieldScene::removeCell(int i, int j)
 {
+	QGraphicsItem* pRemoveItem = nullptr;
+	for(CellItem* pCell : m_cells)
+	{
+		if (pCell->i() == i)
+		{
+			if (pCell->j() == j)
+			{
+				pRemoveItem = pCell;
+				break;
+			}
+		}
+	}
+	if (pRemoveItem)
+	{
+		removeItem(pRemoveItem);
+		delete pRemoveItem;
+	}
 	return true;
 }
 
@@ -128,6 +149,7 @@ void FieldScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 				//Founded item
 				std::auto_ptr<ICommand> pRemove(ICommand::createCellCmd(ICommand::RemoveCell, i, j));
 				dynamic_cast<RemoveCellCommand*>(pRemove.get())->setScene(this);
+				dynamic_cast<RemoveCellCommand*>(pRemove.get())->setModel(this->model());
 				pRemove->exec();
 			}
 			else
@@ -135,6 +157,7 @@ void FieldScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 				//Not founded item
 				std::auto_ptr<ICommand> pAdd(ICommand::createCellCmd(ICommand::AddCell, i, j));
 				dynamic_cast<AddCellCommand*>(pAdd.get())->setScene(this);
+				dynamic_cast<AddCellCommand*>(pAdd.get())->setModel(this->model());
 				pAdd->exec();
 			}
 		}

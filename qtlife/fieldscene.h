@@ -10,7 +10,7 @@
 
 class Workarea;
 class CellItem;
-class DynModel;
+class TSModel;
 
 //=================================================================================================
 class FieldScene : public QGraphicsScene
@@ -24,7 +24,8 @@ public:
 	virtual ~FieldScene();
 
 protected:
-	Workarea *m_area;
+	Workarea	*m_area;
+	TSModel		*m_model;
 	QVector<CellItem*> m_cells;
 
 
@@ -32,7 +33,7 @@ protected:
 	QColor m_borderColor;
 
 public:
-	virtual void fromModel(DynModel& model);
+	virtual void fromModel(TSModel& model);
 
 	virtual bool addCell(int i, int j);
 	virtual bool removeCell(int i, int j);
@@ -40,6 +41,8 @@ public:
 	virtual void clearCells();
 
 	virtual void addArea(Workarea *area);
+
+	TSModel			*model() { return m_model; }
 
 protected:
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)override;
