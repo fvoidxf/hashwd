@@ -41,9 +41,15 @@ void ExitCommand::exec()
 void ChangeModeCommand::exec()
 {
 	if (Config::instance()->currentMode() == Config::EditMode)
+	{
 		Config::instance()->setGameMode();
+		Config::instance()->game()->start();
+	}
 	else
+	{
 		Config::instance()->setEditMode();
+		Config::instance()->game()->setStopFlag();
+	}
 }
 
 //-------------------------------------------------------------------------------------------------

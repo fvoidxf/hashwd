@@ -8,7 +8,9 @@
 
 #include <QColor>
 #include <QPointF>
+#include <QObject>
 
+#include "game.h"
 
 //=================================================================================================
 class Config
@@ -56,6 +58,8 @@ protected:
 
 	unsigned long m_threadTerminateMsTimeout;
 	unsigned long m_statusBarMsgTimeout;
+
+	Game	*m_game;
 
 public:
 	virtual ~Config() {}
@@ -107,6 +111,9 @@ public:
 
 	unsigned long threadTerminateTimeoutMs()const { return m_threadTerminateMsTimeout; }
 	unsigned long statusBarTimeout()const { return m_statusBarMsgTimeout; }
+
+	Game* game() { return m_game; }
+	void createGame(QObject* parent = nullptr) { m_game = new Game(parent); }
 };
 
 //=================================================================================================

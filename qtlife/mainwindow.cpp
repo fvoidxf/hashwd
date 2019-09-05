@@ -18,6 +18,8 @@ MainWindow::MainWindow(QWidget *parent)
 	,m_changeModeAction(nullptr)
 	,m_aboutAction(nullptr)
 {
+	Config::instance()->createGame(this);
+
     ui->setupUi(this);
 	setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
 	setFixedSize(Config::instance()->screenWidth(), Config::instance()->screenHeight());

@@ -55,6 +55,7 @@ Config::Config()
 	, m_threadTerminateMsTimeout(TERMINATE_THREAD_TIMEOUT)
 	, m_statusBarMsgTimeout(STATUSBAR_MSG_TIMEOUT)
 	, m_language(Russian)
+	, m_game(nullptr)
 {
 	static_assert(COLUMNS > 2, "columns must be greater 2");
 	static_assert(ROWS > 2, "rows must be greater 2");

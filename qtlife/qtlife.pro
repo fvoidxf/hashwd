@@ -33,7 +33,8 @@ SOURCES += \
 		dynmodel.cpp \
 		fieldscene.cpp \
 		fieldview.cpp \
-		workarea.cpp
+		workarea.cpp \
+		game.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -45,7 +46,8 @@ HEADERS += \
 		fieldview.h \
 		icommand.h \
 		strings.h \
-		workarea.h
+		workarea.h \
+		game.h
 
 FORMS += \
         mainwindow.ui
