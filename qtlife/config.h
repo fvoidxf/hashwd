@@ -119,6 +119,8 @@ public:
 
 	Game* game() { return m_game; }
 	void createGame(QObject* parent = nullptr) { m_game = new Game(parent); }
+
+	int index(int i, int j);
 };
 
 //=================================================================================================

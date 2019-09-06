@@ -12,6 +12,7 @@ CellItem::CellItem(int i, int j, QGraphicsItem* parent)
 	:QGraphicsItem(parent)
 	, m_i(i)
 	, m_j(j)
+	, m_enabled(false)
 {
 
 }
@@ -49,12 +50,24 @@ void CellItem::paint(QPainter *painter,
 void CellItem::setBackgroundColor(QColor color)
 {
 	m_bgColor = color;
+	update();
 }
 
 //-------------------------------------------------------------------------------------------------
 void CellItem::setBorderColor(QColor color)
 {
 	m_brdColor = color;
+	update();
+}
+
+//-------------------------------------------------------------------------------------------------
+void CellItem::setEnabled(bool bEnabled)
+{
+	m_enabled = bEnabled;
+	if (bEnabled)
+		setBackgroundColor(Config::instance()->cellColor());
+	else
+		setBackgroundColor(Config::instance()->areaBackgroundColor());
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -23,12 +23,17 @@ public:
 	void setBackgroundColor(QColor color);
 	void setBorderColor(QColor color);
 
+	void setEnabled(bool bEnabled = true);
+
 	int i()const { return m_i; }
 	int j()const { return m_j; }
+
+	bool isEnabled()const { return m_enabled; }
 
 protected:
 	int m_i;
 	int m_j;
+	bool m_enabled;
 
 	QColor m_bgColor;
 	QColor m_brdColor;

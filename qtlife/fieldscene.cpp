@@ -7,7 +7,6 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QMutexLocker>
 #include "dynmodel.h"
-#include "workarea.h"
 #include "fieldscene.h"
 #include "cellitem.h"
 #include "config.h"
@@ -16,37 +15,40 @@
 //-------------------------------------------------------------------------------------------------
 FieldScene::FieldScene(QObject *parent)
 	:QGraphicsScene(parent)
-	, m_area(nullptr)
 	, m_model(nullptr)
 {
 	m_model = new TSModel(Config::instance()->columns(), Config::instance()->rows());
 	Config::instance()->game()->setModel(m_model);
 
 	connect(Config::instance()->game(), SIGNAL(ModelUpdated()), this, SLOT(OnModelUpdated()));
+
+	initializeCells();
 }
 
 //-------------------------------------------------------------------------------------------------
 FieldScene::FieldScene(const QRectF &sceneRect, QObject *parent)
 	:QGraphicsScene(sceneRect, parent)
-	, m_area(nullptr)
 	, m_model(nullptr)
 {
 	m_model = new TSModel(Config::instance()->columns(), Config::instance()->rows());
 	Config::instance()->game()->setModel(m_model);
 
 	connect(Config::instance()->game(), SIGNAL(ModelUpdated()), this, SLOT(OnModelUpdated()));
+
+	initializeCells();
 }
 
 //-------------------------------------------------------------------------------------------------
 FieldScene::FieldScene(qreal x, qreal y, qreal width, qreal height, QObject *parent)
 	:QGraphicsScene(x, y, width, height, parent)
-	, m_area(nullptr)
 	, m_model(nullptr)
 {
 	m_model = new TSModel(Config::instance()->columns(), Config::instance()->rows());
 	Config::instance()->game()->setModel(m_model);
 
 	connect(Config::instance()->game(), SIGNAL(ModelUpdated()), this, SLOT(OnModelUpdated()));
+
+	initializeCells();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -74,12 +76,8 @@ void FieldScene::fromModel(TSModel& model)
 //-------------------------------------------------------------------------------------------------
 bool FieldScene::addCell(int i, int j)
 {
-	CellItem *pCell = new CellItem(i, j);
-	pCell->setBackgroundColor(Config::instance()->cellColor());
-	pCell->setBorderColor(Config::instance()->borderColor());
-	addItem(pCell);
-	m_cells.push_back(pCell);
-
+	const int Index = Config::instance()->index(i, j);
+	m_cells[Index]->setEnabled();
 	return true;
 }
 
@@ -93,17 +91,12 @@ bool FieldScene::removeCell(int i, int j)
 		{
 			if (pCell->j() == j)
 			{
-				pRemoveItem = pCell;
-				break;
+				pCell->setEnabled(false);
+				return true;
 			}
 		}
 	}
-	if (pRemoveItem)
-	{
-		removeItem(pRemoveItem);
-		delete pRemoveItem;
-	}
-	return true;
+	return false;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -111,20 +104,13 @@ void FieldScene::clearCells()
 {
 	for (CellItem* c : m_cells)
 	{
-		QMutexLocker lock(m_model->mutex());
-		m_model->item(c->i(), c->j()) = 0;
-
-		removeItem(c);
-		delete c;
+		if (c->isEnabled())
+		{
+			QMutexLocker lock(m_model->mutex());
+			m_model->item(c->i(), c->j()) = 0;
+			c->setEnabled(false);
+		}
 	}
-	m_cells.clear();
-}
-
-//-------------------------------------------------------------------------------------------------
-void FieldScene::addArea(Workarea *area)
-{
-	m_area = area;
-	addItem(area);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -137,11 +123,27 @@ void FieldScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 		if (Qt::LeftButton & event->button())
 		{
 			QPointF pos = event->scenePos();
-			int i = 0;
-			int j = 0;
+			int i = 0, j = 0;
 			Config::instance()->scenePosToIndex(pos, i, j);
 
-			QList<QGraphicsItem*> _items = items(pos, Qt::ContainsItemShape);
+			const int Index = Config::instance()->index(i, j);
+
+			if (m_cells[Index]->isEnabled())
+			{
+				std::auto_ptr<ICommand> pRemove(ICommand::createCellCmd(ICommand::RemoveCell, i, j));
+				dynamic_cast<RemoveCellCommand*>(pRemove.get())->setScene(this);
+				dynamic_cast<RemoveCellCommand*>(pRemove.get())->setModel(this->model());
+				pRemove->exec();
+			}
+			else
+			{
+				std::auto_ptr<ICommand> pAdd(ICommand::createCellCmd(ICommand::AddCell, i, j));
+				dynamic_cast<AddCellCommand*>(pAdd.get())->setScene(this);
+				dynamic_cast<AddCellCommand*>(pAdd.get())->setModel(this->model());
+				pAdd->exec();
+			}
+
+			/*QList<QGraphicsItem*> _items = items(pos, Qt::ContainsItemShape);
 			QGraphicsItem* pSelectedItem = nullptr;
 
 			for (QGraphicsItem* pItem : _items)
@@ -168,7 +170,7 @@ void FieldScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 				dynamic_cast<AddCellCommand*>(pAdd.get())->setScene(this);
 				dynamic_cast<AddCellCommand*>(pAdd.get())->setModel(this->model());
 				pAdd->exec();
-			}
+			}*/
 		}
 		QGraphicsScene::mousePressEvent(event);
 	}
@@ -179,6 +181,30 @@ void FieldScene::OnModelUpdated()
 {
 	QMutexLocker lock(m_model->mutex());
 	fromModel(*m_model);
+}
+
+//-------------------------------------------------------------------------------------------------
+bool FieldScene::initializeCells()
+{
+	try
+	{
+		for (auto i = 0; i < Config::instance()->columns(); i++)
+		{
+			for (auto j = 0; j < Config::instance()->rows(); j++)
+			{
+				CellItem* pC = new CellItem(i, j);
+				pC->setBackgroundColor(Config::instance()->areaBackgroundColor());
+				pC->setBorderColor(Config::instance()->borderColor());
+				m_cells.push_back(pC);
+				addItem(pC);
+			}
+		}
+	}
+	catch (...)
+	{
+		return false;
+	}
+	return true;
 }
 
 //-------------------------------------------------------------------------------------------------

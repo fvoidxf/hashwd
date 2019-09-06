@@ -8,7 +8,6 @@
 
 #include <QGraphicsScene>
 
-class Workarea;
 class CellItem;
 class TSModel;
 
@@ -24,7 +23,6 @@ public:
 	virtual ~FieldScene();
 
 protected:
-	Workarea	*m_area;
 	TSModel		*m_model;
 	QVector<CellItem*> m_cells;
 
@@ -33,14 +31,14 @@ protected:
 	QColor m_borderColor;
 
 public:
+	virtual bool initializeCells();
+
 	virtual void fromModel(TSModel& model);
 
 	virtual bool addCell(int i, int j);
 	virtual bool removeCell(int i, int j);
 
 	virtual void clearCells();
-
-	virtual void addArea(Workarea *area);
 
 	TSModel			*model() { return m_model; }
 

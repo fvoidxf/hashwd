@@ -5,7 +5,6 @@
 #include "config.h"
 #include "strings.h"
 #include "fieldscene.h"
-#include "workarea.h"
 
 //-------------------------------------------------------------------------------------------------
 MainWindow::MainWindow(QWidget *parent) 
@@ -26,14 +25,6 @@ MainWindow::MainWindow(QWidget *parent)
 	setCentralWidget(ui->graphicsView);
 
 	ui->graphicsView->setScene(new FieldScene(this));
-
-	QRectF areasz(0, 0, Config::instance()->fieldWidth(), Config::instance()->fieldHeight());
-
-	Workarea *area = new Workarea(areasz, Config::instance()->columns(), Config::instance()->rows());
-	area->setBackgroundColor(Config::instance()->areaBackgroundColor());
-	area->setBorderColor(Config::instance()->borderColor());
-
-	dynamic_cast<FieldScene*>(ui->graphicsView->scene())->addArea(area);
 
 	if (Config::instance()->currentLanguage() == Config::Russian)
 	{
