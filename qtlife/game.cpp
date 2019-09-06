@@ -21,49 +21,44 @@ Game::~Game()
 //-------------------------------------------------------------------------------------------------
 bool Game::step(TSModel *model)
 {
-	for (auto i = 1; i < Config::instance()->columns() - 1; i++)
+	for (auto i = 0; i < Config::instance()->columns(); i++)
 	{
-		for (auto j = 1; j < Config::instance()->rows() - 1; j++)
+		for (auto j = 0; j < Config::instance()->rows(); j++)
 		{
 			int alive_cnt = 0;
-			if (model->item(i - 1, j - 1))
+			if (i && j && model->item(i - 1, j - 1))
 				++alive_cnt;
-			if (model->item(i, j - 1))
+			if (j && model->item(i, j - 1))
 				++alive_cnt;
-			if (model->item(i + 1, j - 1))
-				++alive_cnt;
-
-			if (model->item(i - 1, j))
-				++alive_cnt;
-			if (model->item(i + 1, j))
+			if ( (i < Config::instance()->columns() - 1) &&  j && model->item(i + 1, j - 1))
 				++alive_cnt;
 
-			if (model->item(i - 1, j + 1))
+			if (i && model->item(i - 1, j))
 				++alive_cnt;
-			if (model->item(i, j + 1))
+			if ((i < Config::instance()->columns() - 1) && model->item(i + 1, j))
 				++alive_cnt;
-			if (model->item(i + 1, j + 1))
+
+			if ( (j < Config::instance()->rows() - 1) && i && model->item(i - 1, j + 1))
+				++alive_cnt;
+			if ((j < Config::instance()->rows() - 1) && model->item(i, j + 1))
+				++alive_cnt;
+			if ((j < Config::instance()->rows() - 1) && (i < Config::instance()->columns() - 1) && model->item(i + 1, j + 1))
 				++alive_cnt;
 
 			if (model->item(i, j) == 0)
 			{
+				//dead cell
 				if (alive_cnt == 3)
-				{
 					model->item(i, j) = 1;
-					continue;
-				}
+				continue;
 			}
-
-			if (model->item(i, j) == 1)
+			else
 			{
+				//live cell
 				if ((alive_cnt == 2) || (alive_cnt == 3))
-				{
-					model->item(i, j) = 1;
 					continue;
-				}
+				model->item(i, j) = 0;
 			}
-
-			model->item(i, j) = 0;
 		}
 	}
 	return true;
