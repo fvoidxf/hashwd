@@ -7,8 +7,10 @@
 
 #define SCREEN_WIDTH		650
 #define SCREEN_HEIGHT		540
-#define COLUMNS				64
-#define ROWS				48
+
+#define COLUMNS				32
+#define ROWS				24
+
 #define FIELD_WIDTH			640
 #define FIELD_HEIGHT		480
 #define TIMEOUT_MS			80
@@ -18,8 +20,6 @@
 #define RANDOM_COUNT_N		5
 #define RANDOM_COUNT_M		4
 
-#define CELL_SCALE_FACTOR	0.5
-#define CELL_SCALE_STEP		0.2
 
 #define VERSION_MAJOR		0
 #define VERSION_MIDLE		5
@@ -33,8 +33,7 @@ Config* Config::m_self = nullptr;
 
 //-------------------------------------------------------------------------------------------------
 Config::Config()
-	:m_cellScale(CELL_SCALE_FACTOR)
-	, m_columns(COLUMNS)
+	: m_columns(COLUMNS)
 	, m_rows(ROWS)
 	, m_screenWidth(SCREEN_WIDTH)
 	, m_screenHeight(SCREEN_HEIGHT)

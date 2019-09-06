@@ -21,7 +21,8 @@ FieldScene::FieldScene(QObject *parent)
 {
 	m_model = new TSModel(Config::instance()->columns(), Config::instance()->rows());
 	Config::instance()->game()->setModel(m_model);
-	Config::instance()->game()->setScene(this);
+
+	connect(Config::instance()->game(), SIGNAL(ModelUpdated()), this, SLOT(OnModelUpdated()));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -32,7 +33,8 @@ FieldScene::FieldScene(const QRectF &sceneRect, QObject *parent)
 {
 	m_model = new TSModel(Config::instance()->columns(), Config::instance()->rows());
 	Config::instance()->game()->setModel(m_model);
-	Config::instance()->game()->setScene(this);
+
+	connect(Config::instance()->game(), SIGNAL(ModelUpdated()), this, SLOT(OnModelUpdated()));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -43,7 +45,8 @@ FieldScene::FieldScene(qreal x, qreal y, qreal width, qreal height, QObject *par
 {
 	m_model = new TSModel(Config::instance()->columns(), Config::instance()->rows());
 	Config::instance()->game()->setModel(m_model);
-	Config::instance()->game()->setScene(this);
+
+	connect(Config::instance()->game(), SIGNAL(ModelUpdated()), this, SLOT(OnModelUpdated()));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -62,6 +65,8 @@ void FieldScene::fromModel(TSModel& model)
 		{
 			if (model.item(i, j) == 1)
 				addCell(i, j);
+			else
+				removeCell(i, j);
 		}
 	}
 }
@@ -104,17 +109,15 @@ bool FieldScene::removeCell(int i, int j)
 //-------------------------------------------------------------------------------------------------
 void FieldScene::clearCells()
 {
-	/*for (CellItem* c : m_cells)
+	for (CellItem* c : m_cells)
 	{
-		if (m_thread)
-		{
-			QMutexLocker lock(m_thread->getMutex());
-			m_thread->getData()->item(c->i(), c->j()) = 0;
-		}
+		QMutexLocker lock(m_model->mutex());
+		m_model->item(c->i(), c->j()) = 0;
+
 		removeItem(c);
 		delete c;
 	}
-	m_cells.clear();*/
+	m_cells.clear();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -169,6 +172,13 @@ void FieldScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 		}
 		QGraphicsScene::mousePressEvent(event);
 	}
+}
+
+//-------------------------------------------------------------------------------------------------
+void FieldScene::OnModelUpdated()
+{
+	QMutexLocker lock(m_model->mutex());
+	fromModel(*m_model);
 }
 
 //-------------------------------------------------------------------------------------------------

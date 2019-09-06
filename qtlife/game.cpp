@@ -76,9 +76,10 @@ void Game::run()
 
 	while (m_running)
 	{
+		QThread::msleep(300);
 		QMutexLocker lock(m_model->mutex());
 		step(m_model);
-		m_scene->fromModel(*m_model);
+		emit ModelUpdated();
 	}
 }
 

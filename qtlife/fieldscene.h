@@ -46,6 +46,9 @@ public:
 
 protected:
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)override;
+
+public slots:
+	void OnModelUpdated();
 };
 
 //=================================================================================================

@@ -3,9 +3,17 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+	try
+	{
+		QApplication a(argc, argv);
+		MainWindow w;
+		w.show();
 
-    return a.exec();
+		return a.exec();
+	}
+	catch (...)
+	{
+		return -1;
+	}
+	return 0;
 }

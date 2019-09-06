@@ -40,15 +40,22 @@ void ExitCommand::exec()
 //-------------------------------------------------------------------------------------------------
 void ChangeModeCommand::exec()
 {
-	if (Config::instance()->currentMode() == Config::EditMode)
+	try
 	{
-		Config::instance()->setGameMode();
-		Config::instance()->game()->start();
+		if (Config::instance()->currentMode() == Config::EditMode)
+		{
+			Config::instance()->setGameMode();
+			Config::instance()->game()->start();
+		}
+		else
+		{
+			Config::instance()->setEditMode();
+			Config::instance()->game()->setStopFlag();
+		}
 	}
-	else
+	catch (...)
 	{
-		Config::instance()->setEditMode();
-		Config::instance()->game()->setStopFlag();
+
 	}
 }
 
@@ -77,17 +84,17 @@ void AboutCommand::exec()
 //-------------------------------------------------------------------------------------------------
 void AddCellCommand::exec()
 {
-	m_scene->addCell(m_i, m_j);
 	QMutexLocker lock(m_model->mutex());
-	m_model->item(m_i, m_i) = 1;
+	m_model->item(m_i, m_j) = 1;
+	m_scene->addCell(m_i, m_j);
 }
 
 //-------------------------------------------------------------------------------------------------
 void RemoveCellCommand::exec()
 {
-	m_scene->removeCell(m_i, m_j);
 	QMutexLocker lock(m_model->mutex());
-	m_model->item(m_i, m_j);
+	m_model->item(m_i, m_j) = 0;
+	m_scene->removeCell(m_i, m_j);
 }
 
 //-------------------------------------------------------------------------------------------------

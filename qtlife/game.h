@@ -18,15 +18,16 @@ public:
 	bool step(TSModel *model);
 
 	void setModel(TSModel* model) { m_model = model; }
-	void setScene(FieldScene* scene) { m_scene = scene; }
 	void setStopFlag() { m_running = false;}
 
 protected:
 	virtual void run()override;
 
 	TSModel			*m_model;
-	FieldScene		*m_scene;
 	bool			m_running;
+
+signals:
+	void ModelUpdated();
 };
 
 //=================================================================================================
