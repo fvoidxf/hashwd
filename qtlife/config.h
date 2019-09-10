@@ -64,6 +64,9 @@ protected:
 
 	Game	*m_game;
 
+
+	std::string			m_defaultFilename;
+
 public:
 	virtual ~Config() {}
 
@@ -121,6 +124,8 @@ public:
 	void createGame(QObject* parent = nullptr) { m_game = new Game(parent); }
 
 	int index(int i, int j);
+
+	std::string filename()const { return m_defaultFilename; }
 };
 
 //=================================================================================================

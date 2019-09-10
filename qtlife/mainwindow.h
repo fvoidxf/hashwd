@@ -28,6 +28,9 @@ private:
 	QAction									*m_exitAction;
 	QAction									*m_changeModeAction;
 	QAction									*m_aboutAction;
+	QAction									*m_newFileAction;
+	QAction									*m_saveFileAction;
+	QAction									*m_loadFileAction;
 
 
 
@@ -38,6 +41,10 @@ public slots:
 	void									OnChangeMode();
 	void									OnUpdateStatusMsg(const QString& msg);
 	void									OnAbout();
+
+	void									OnNewFile();
+	void									OnSaveFile();
+	void									OnLoadFile();
 };
 
 //=================================================================================================

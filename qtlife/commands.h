@@ -77,5 +77,30 @@ private:
 };
 
 //=================================================================================================
+class IFileCommand : public ICommand
+{
+protected:
+	const std::string	m_filename;
+	FieldScene			*m_scene;
+
+public:
+	IFileCommand(const std::string& file):m_filename(file){}
+	virtual ~IFileCommand(){}
+
+	void setScene(FieldScene* scene) { m_scene = scene; }
+};
+
+//=================================================================================================
+class NewFileCommand : public IFileCommand
+{
+public:
+	NewFileCommand(const std::string file) :IFileCommand(file){}
+	virtual ~NewFileCommand(){}
+
+
+	virtual void exec();
+};
+
+//=================================================================================================
 
 #endif

@@ -32,6 +32,16 @@ ICommand* ICommand::createCellCmd(Type cmdType, int i, int j)
 }
 
 //-------------------------------------------------------------------------------------------------
+ICommand* ICommand::createFileCmd(Type cmdType, const std::string& filename)
+{
+	switch (cmdType)
+	{
+	case NewFile: return new NewFileCommand(filename);
+	}
+	return nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------
 void ExitCommand::exec()
 {
 	qApp->exit();
@@ -95,6 +105,23 @@ void RemoveCellCommand::exec()
 	QMutexLocker lock(m_model->mutex());
 	m_model->item(m_i, m_j) = 0;
 	m_scene->removeCell(m_i, m_j);
+}
+
+//-------------------------------------------------------------------------------------------------
+void NewFileCommand::exec()
+{
+	QMutexLocker lock(m_scene->model()->mutex());
+	for (auto i = 0; i < Config::instance()->columns(); i++)
+	{
+		for (auto j = 0; j < Config::instance()->rows(); j++)
+		{
+			if (m_scene->model()->item(i, j) == 1)
+			{
+				m_scene->model()->item(i, j) = 0;
+				m_scene->removeCell(i, j);
+			}
+		}
+	}
 }
 
 //-------------------------------------------------------------------------------------------------

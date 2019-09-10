@@ -28,6 +28,8 @@
 #define TERMINATE_THREAD_TIMEOUT	1500
 #define STATUSBAR_MSG_TIMEOUT		5000
 
+#define DEFAULT_FILENAME	"qtlife.sav"
+
 //-------------------------------------------------------------------------------------------------
 Config* Config::m_self = nullptr;
 
@@ -55,6 +57,7 @@ Config::Config()
 	, m_statusBarMsgTimeout(STATUSBAR_MSG_TIMEOUT)
 	, m_language(Russian)
 	, m_game(nullptr)
+	, m_defaultFilename(DEFAULT_FILENAME)
 {
 	static_assert(COLUMNS > 2, "columns must be greater 2");
 	static_assert(ROWS > 2, "rows must be greater 2");

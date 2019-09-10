@@ -16,6 +16,9 @@ MainWindow::MainWindow(QWidget *parent)
 	,m_helpMenu(nullptr)
 	,m_changeModeAction(nullptr)
 	,m_aboutAction(nullptr)
+	,m_newFileAction(nullptr)
+	,m_saveFileAction(nullptr)
+	,m_loadFileAction(nullptr)
 {
 	Config::instance()->createGame(this);
 
@@ -34,6 +37,9 @@ MainWindow::MainWindow(QWidget *parent)
 		m_exitAction = new QAction(QTLIFE_ACTION_EXIT_RU, this);
 		m_changeModeAction = new QAction(QTLIFE_ACTION_GAMEMODE_RU, this);
 		m_aboutAction = new QAction(QTLIFE_ACTION_ABOUT_RU, this);
+		m_newFileAction = new QAction(QTLIFE_ACTION_NEWFILE_RU, this);
+		m_saveFileAction = new QAction(QTLIFE_ACTION_SAVEFILE_RU, this);
+		m_loadFileAction = new QAction(QTLIFE_ACTION_LOADFILE_RU, this);
 	}
 	else
 	{
@@ -43,18 +49,30 @@ MainWindow::MainWindow(QWidget *parent)
 		m_exitAction = new QAction(QTLIFE_ACTION_EXIT_EN, this);
 		m_changeModeAction = new QAction(QTLIFE_ACTION_GAMEMODE_EN, this);
 		m_aboutAction = new QAction(QTLIFE_ACTION_ABOUT_EN, this);
+		m_newFileAction = new QAction(QTLIFE_ACTION_NEWFILE_EN, this);
+		m_saveFileAction = new QAction(QTLIFE_ACTION_SAVEFILE_EN, this);
+		m_loadFileAction = new QAction(QTLIFE_ACTION_LOADFILE_EN, this);
 	}
 
 	setWindowTitle(QTLIFE_APP_NAME);
-
-	connect(m_exitAction, SIGNAL(triggered()), this, SLOT(OnExit()));
-	m_fileMenu->addAction(m_exitAction);
 
 	connect(m_changeModeAction, SIGNAL(triggered()), this, SLOT(OnChangeMode()));
 	m_gameMenu->addAction(m_changeModeAction);
 
 	connect(m_aboutAction, SIGNAL(triggered()), this, SLOT(OnAbout()));
 	m_helpMenu->addAction(m_aboutAction);
+
+	connect(m_newFileAction, SIGNAL(triggered()), this, SLOT(OnNewFile()));
+	m_fileMenu->addAction(m_newFileAction);
+
+	connect(m_saveFileAction, SIGNAL(triggered()), this, SLOT(OnSaveFile()));
+	m_fileMenu->addAction(m_saveFileAction);
+
+	connect(m_loadFileAction, SIGNAL(triggered()), this, SLOT(OnLoadFile()));
+	m_fileMenu->addAction(m_loadFileAction);
+
+	connect(m_exitAction, SIGNAL(triggered()), this, SLOT(OnExit()));
+	m_fileMenu->addAction(m_exitAction);
 
 	Config::instance()->setEditMode();
 
@@ -128,6 +146,26 @@ void MainWindow::OnAbout()
 {
 	std::auto_ptr<ICommand> pAbout(ICommand::create(ICommand::About));
 	pAbout->exec();
+}
+
+//-------------------------------------------------------------------------------------------------
+void MainWindow::OnNewFile()
+{
+	std::auto_ptr<ICommand> pNewFile(ICommand::createFileCmd(ICommand::NewFile, Config::instance()->filename()));
+	dynamic_cast<IFileCommand*>(pNewFile.get())->setScene(dynamic_cast<FieldScene*>( ui->graphicsView->scene() ) );
+	pNewFile->exec();
+}
+
+//-------------------------------------------------------------------------------------------------
+void MainWindow::OnSaveFile()
+{
+
+}
+
+//-------------------------------------------------------------------------------------------------
+void MainWindow::OnLoadFile()
+{
+
 }
 
 //-------------------------------------------------------------------------------------------------

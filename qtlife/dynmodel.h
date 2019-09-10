@@ -54,5 +54,27 @@ public:
 };
 
 //=================================================================================================
+class FileCtrlModel
+{
+protected:
+	const std::string	m_filename;
+	TSModel				*m_model;
+
+public:
+	FileCtrlModel(const std::string& filename, TSModel* pModel)
+		:m_filename(filename)
+		, m_model(pModel)
+	{
+
+	}
+
+	virtual ~FileCtrlModel(){}
+
+	virtual bool save();
+	virtual bool load();
+};
+
+//=================================================================================================
+
 
 #endif // __DYNMODEL_H__

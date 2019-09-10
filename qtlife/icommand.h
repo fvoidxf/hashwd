@@ -13,6 +13,9 @@ public:
 		About,
 		AddCell,
 		RemoveCell,
+		NewFile,
+		LoadFile,
+		SaveFile,
 	};
 
 
@@ -22,6 +25,7 @@ public:
 
 	static ICommand* create(Type cmdType);
 	static ICommand* createCellCmd(Type cmdType, int i, int j);
+	static ICommand* createFileCmd(Type cmdType, const std::string & filename);
 };
 
 //=================================================================================================s
