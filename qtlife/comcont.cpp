@@ -71,6 +71,7 @@ bool CompCont::add(TSModel* pModel)
 		return false;
 
 	DataPacker::TData* pDatArr = new DataPacker::TData[memCellSize()];
+	memset(pDatArr, 0, sizeof(DataPacker::TData)*memCellSize());
 
 	for (auto i = 0; i < uiColumns; i++)
 	{
