@@ -15,6 +15,8 @@
 #define QTLIFE_ACTION_NEWFILE_RU								"Новый"
 #define QTLIFE_ACTION_SAVEFILE_RU								"Сохранить"
 #define QTLIFE_ACTION_LOADFILE_RU								"Загрузить"
+#define QTLIFE_ACTION_STEPFORWARD_RU							"Шаг вперед..."
+#define QTLIFE_ACTION_STEPBACKWARD_RU							"Шаг назад..."
 
 #define QTLIFE_STATUSMSG_EDITMODE_RU							"Переключено в режим редактирования..."
 #define QTLIFE_STATUSMSG_GAMEMODE_RU							"Переключено в режим игры.."
@@ -35,6 +37,8 @@
 #define QTLIFE_ACTION_NEWFILE_EN								"New"
 #define QTLIFE_ACTION_SAVEFILE_EN								"Save"
 #define QTLIFE_ACTION_LOADFILE_EN								"Load"
+#define QTLIFE_ACTION_STEPFORWARD_EN							"Step forward..."
+#define QTLIFE_ACTION_STEPBACKWARD_EN							"Step backward..."
 
 #define QTLIFE_STATUSMSG_EDITMODE_EN							"Switched to edit mode..."
 #define QTLIFE_STATUSMSG_GAMEMODE_EN							"Switched to game mode..."

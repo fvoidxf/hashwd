@@ -74,6 +74,8 @@ void Game::run()
 		QThread::msleep(40);
 		QMutexLocker lock(m_model->mutex());
 		step(m_model);
+		CompCont::incIndex();
+		Config::instance()->sticker()->add(m_model);
 		emit ModelUpdated();
 	}
 }

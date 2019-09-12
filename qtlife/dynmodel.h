@@ -11,6 +11,9 @@
 #include <vld.h>
 #endif
 
+#include <stdexcept>
+#include <QVector>
+#include <QFile>
 #include <QMutex>
 #include <QMutexLocker>
 #include "fieldscene.h"
@@ -77,6 +80,19 @@ public:
 		m_data = td;
 		return *this;
 	}
+};
+
+//=================================================================================================
+class RefDataPacker
+{
+protected:
+	DataPacker::TData& m_refData;
+
+public:
+	RefDataPacker(DataPacker::TData& RefData) :m_refData(RefData) {}
+
+	virtual bool operator[](int index)const;
+	virtual void setData(int index, bool bFlag = true);
 };
 
 //=================================================================================================

@@ -11,6 +11,7 @@
 #include <QObject>
 
 #include "game.h"
+#include "comcont.h"
 
 
 //=================================================================================================
@@ -67,8 +68,10 @@ protected:
 
 	std::string			m_defaultFilename;
 
+	CompCont			*m_sticker;
+
 public:
-	virtual ~Config() {}
+	virtual ~Config() { if (m_sticker)delete m_sticker; }
 
 	static Config* instance();
 
@@ -126,6 +129,7 @@ public:
 	int index(int i, int j);
 
 	std::string filename()const { return m_defaultFilename; }
+	CompCont* sticker() { return m_sticker; }
 };
 
 //=================================================================================================

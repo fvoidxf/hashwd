@@ -29,6 +29,7 @@ SOURCES += \
         mainwindow.cpp \
 		cellitem.cpp \
 		commands.cpp \
+		comcont.cpp \
 		config.cpp \
 		dynmodel.cpp \
 		fieldscene.cpp \
@@ -39,6 +40,7 @@ HEADERS += \
         mainwindow.h \
 		cellitem.h \
 		commands.h \
+		comcont.h \
 		config.h \
 		dynmodel.h \
 		fieldscene.h \

@@ -58,9 +58,11 @@ Config::Config()
 	, m_language(Russian)
 	, m_game(nullptr)
 	, m_defaultFilename(DEFAULT_FILENAME)
+	, m_sticker(nullptr)
 {
 	static_assert(COLUMNS > 2, "columns must be greater 2");
 	static_assert(ROWS > 2, "rows must be greater 2");
+	m_sticker = new CompCont;
 }
 
 //-------------------------------------------------------------------------------------------------

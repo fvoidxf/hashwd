@@ -3,9 +3,6 @@
 * General Public License v3
 *         2019
 */
-#include <stdexcept>
-#include <QVector>
-#include <QFile>
 #include "dynmodel.h"
 #include "config.h"
 
@@ -97,6 +94,41 @@ void DataPacker::setData(int index, bool bFlag)
 		{
 			TData t = 0x00000001 << index;
 			m_data ^= t;
+		}
+	}
+}
+
+//-------------------------------------------------------------------------------------------------
+bool RefDataPacker::operator[](int index)const
+{
+	if (index < 0)
+		throw std::range_error("invalid index");
+	if (index > sizeof(DataPacker::TData) * 8)
+		throw std::range_error("invalid index");
+
+	DataPacker::TData t = 0x00000001 << index;
+	return t & m_refData;
+}
+
+//-------------------------------------------------------------------------------------------------
+void RefDataPacker::setData(int index, bool bFlag)
+{
+	if (index < 0)
+		throw std::range_error("invalid index");
+	if (index > sizeof(DataPacker::TData) * 8)
+		throw std::range_error("invalid index");
+
+	if (bFlag)
+	{
+		DataPacker::TData t = 0x00000001 << index;
+		m_refData |= t;
+	}
+	else
+	{
+		if (operator[](index))
+		{
+			DataPacker::TData t = 0x00000001 << index;
+			m_refData ^= t;
 		}
 	}
 }

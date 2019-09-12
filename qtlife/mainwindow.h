@@ -31,6 +31,8 @@ private:
 	QAction									*m_newFileAction;
 	QAction									*m_saveFileAction;
 	QAction									*m_loadFileAction;
+	QAction									*m_stepForwardAction;
+	QAction									*m_stepBackwardAction;
 
 
 
@@ -45,6 +47,9 @@ public slots:
 	void									OnNewFile();
 	void									OnSaveFile();
 	void									OnLoadFile();
+
+	void									OnStepForward();
+	void									OnStepBackward();
 };
 
 //=================================================================================================
