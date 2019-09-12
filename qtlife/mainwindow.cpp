@@ -159,13 +159,17 @@ void MainWindow::OnNewFile()
 //-------------------------------------------------------------------------------------------------
 void MainWindow::OnSaveFile()
 {
-
+	std::auto_ptr<ICommand> pSaveFile(ICommand::createFileCmd(ICommand::SaveFile, Config::instance()->filename()));
+	dynamic_cast<IFileCommand*>(pSaveFile.get())->setScene(dynamic_cast<FieldScene*>(ui->graphicsView->scene()));
+	pSaveFile->exec();
 }
 
 //-------------------------------------------------------------------------------------------------
 void MainWindow::OnLoadFile()
 {
-
+	std::auto_ptr<ICommand> pLoadFile(ICommand::createFileCmd(ICommand::LoadFile, Config::instance()->filename()));
+	dynamic_cast<IFileCommand*>(pLoadFile.get())->setScene(dynamic_cast<FieldScene*>(ui->graphicsView->scene()));
+	pLoadFile->exec();
 }
 
 //-------------------------------------------------------------------------------------------------

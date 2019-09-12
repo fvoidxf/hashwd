@@ -13,6 +13,7 @@
 
 #include <QMutex>
 #include <QMutexLocker>
+#include "fieldscene.h"
 
 
 //=================================================================================================
@@ -54,16 +55,45 @@ public:
 };
 
 //=================================================================================================
+class DataPacker
+{
+public:
+	typedef unsigned int TData;
+
+protected:
+	TData m_data;
+
+public:
+	virtual ~DataPacker(){}
+	explicit DataPacker(TData data = 0):m_data(data){}
+
+	virtual bool operator[](int index)const;
+
+	TData getData()const { return m_data; }
+	virtual void setData(int index, bool bFlag = true);
+
+	DataPacker& operator=(const TData& td)
+	{
+		m_data = td;
+		return *this;
+	}
+};
+
+//=================================================================================================
 class FileCtrlModel
 {
 protected:
 	const std::string	m_filename;
 	TSModel				*m_model;
+	FieldScene			*m_scene;
+
+	void savePacker(QVector<DataPacker>& vec);
 
 public:
-	FileCtrlModel(const std::string& filename, TSModel* pModel)
+	FileCtrlModel(const std::string& filename, FieldScene* pScene)
 		:m_filename(filename)
-		, m_model(pModel)
+		, m_scene(pScene)
+		, m_model(pScene->model())
 	{
 
 	}

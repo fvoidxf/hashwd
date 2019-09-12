@@ -102,5 +102,27 @@ public:
 };
 
 //=================================================================================================
+class SaveFileCommand : public IFileCommand
+{
+public:
+	SaveFileCommand(const std::string file) :IFileCommand(file) {}
+	virtual ~SaveFileCommand() {}
+
+
+	virtual void exec();
+};
+
+//=================================================================================================
+class LoadFileCommand : public IFileCommand
+{
+public:
+	LoadFileCommand(const std::string file) :IFileCommand(file) {}
+	virtual ~LoadFileCommand() {}
+
+
+	virtual void exec();
+};
+
+//=================================================================================================
 
 #endif

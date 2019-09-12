@@ -37,6 +37,8 @@ ICommand* ICommand::createFileCmd(Type cmdType, const std::string& filename)
 	switch (cmdType)
 	{
 	case NewFile: return new NewFileCommand(filename);
+	case SaveFile:return new SaveFileCommand(filename);
+	case LoadFile:return new LoadFileCommand(filename);
 	}
 	return nullptr;
 }
@@ -125,3 +127,18 @@ void NewFileCommand::exec()
 }
 
 //-------------------------------------------------------------------------------------------------
+void SaveFileCommand::exec()
+{
+	std::auto_ptr<FileCtrlModel> pCtrl(new FileCtrlModel(Config::instance()->filename(), m_scene));
+	pCtrl->save();
+}
+
+//-------------------------------------------------------------------------------------------------
+void LoadFileCommand::exec()
+{
+	std::auto_ptr<FileCtrlModel> pCtrl(new FileCtrlModel(Config::instance()->filename(), m_scene));
+	pCtrl->load();
+}
+
+//-------------------------------------------------------------------------------------------------
+
