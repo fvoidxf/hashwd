@@ -19,14 +19,21 @@ class SettingsWindow : public QMainWindow
 {
 	Q_OBJECT
 
-protected:
-
 public:
 	explicit SettingsWindow(QWidget *parent = nullptr);
 	virtual ~SettingsWindow();
 
 private:
 	Ui::SettingsWindow						*ui;
+
+public slots:
+	void OnLoadSettings();
+	void OnSaveSettings();
+	void OnCancel();
+
+	void OnBgColorChange();
+	void OnLineColorChange();
+	void OnCellColorChange();
 };
 
 //=================================================================================================

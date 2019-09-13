@@ -6,12 +6,15 @@
 
 #include <QApplication>
 #include <QMessageBox>
+#include <QMainWindow>
 #include "commands.h"
 #include "config.h"
 #include "strings.h"
 #include "fieldscene.h"
 #include "dynmodel.h"
 #include "settings.h"
+
+QMainWindow* SettingsCommand::m_wnd = nullptr;
 
 //-------------------------------------------------------------------------------------------------
 ICommand* ICommand::create(Type cmdType)
@@ -151,9 +154,9 @@ void LoadFileCommand::exec()
 //-------------------------------------------------------------------------------------------------
 void SettingsCommand::exec()
 {
-	SettingsWindow sttgs;
-
-	sttgs.show();
+	if (m_wnd == nullptr)
+		m_wnd = new SettingsWindow;
+	m_wnd->show();
 }
 
 //-------------------------------------------------------------------------------------------------

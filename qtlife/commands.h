@@ -10,6 +10,7 @@
 
 class FieldScene;
 class TSModel;
+class QMainWindow;
 
 //=================================================================================================
 class ExitCommand : public ICommand
@@ -86,6 +87,8 @@ class SettingsCommand : public ICommand
 {
 public:
 	virtual void exec()override;
+
+	static QMainWindow* m_wnd;
 };
 
 //=================================================================================================

@@ -70,6 +70,8 @@ protected:
 
 	CompCont			*m_sticker;
 
+	std::string			m_settingsFilename;
+
 public:
 	virtual ~Config() { if (m_sticker)delete m_sticker; }
 
@@ -130,6 +132,11 @@ public:
 
 	std::string filename()const { return m_defaultFilename; }
 	CompCont* sticker() { return m_sticker; }
+
+	std::string settingsFilename()const { return m_settingsFilename; }
+
+	bool readSettings();
+	void writeSettings();
 };
 
 //=================================================================================================

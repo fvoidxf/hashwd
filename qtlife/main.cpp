@@ -6,11 +6,14 @@
 
 #include "mainwindow.h"
 #include <QApplication>
+#include "config.h"
 
 int main(int argc, char *argv[])
 {
 	try
 	{
+		Config::instance()->readSettings();
+
 		QApplication a(argc, argv);
 		MainWindow w;
 		w.show();

@@ -112,6 +112,8 @@ MainWindow::MainWindow(QWidget *parent)
 		OnUpdateStatusMsg(QTLIFE_INIT_MSG_RU);
 	else
 		OnUpdateStatusMsg(QTLIFE_INIT_MSG_EN);
+
+	Config::instance()->writeSettings();
 }
 
 //-------------------------------------------------------------------------------------------------
