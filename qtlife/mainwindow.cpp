@@ -1,3 +1,9 @@
+/*
+* created by fv01dxf@gmail.com
+* General Public License v3
+*         2019
+*/
+
 #include <QAction>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -21,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
 	,m_loadFileAction(nullptr)
 	,m_stepForwardAction(nullptr)
 	,m_stepBackwardAction(nullptr)
+	,m_settingsAction(nullptr)
 {
 	Config::instance()->createGame(this);
 
@@ -46,6 +53,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 		m_stepForwardAction = new QAction(QTLIFE_ACTION_STEPFORWARD_RU, this);
 		m_stepBackwardAction = new QAction(QTLIFE_ACTION_STEPBACKWARD_RU, this);
+
+		m_settingsAction = new QAction(QTLIFE_ACTION_SETTINGS_RU, this);
 	}
 	else
 	{
@@ -62,6 +71,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 		m_stepForwardAction = new QAction(QTLIFE_ACTION_STEPFORWARD_EN, this);
 		m_stepBackwardAction = new QAction(QTLIFE_ACTION_STEPBACKWARD_EN, this);
+
+		m_settingsAction = new QAction(QTLIFE_ACTION_SETTINGS_EN, this);
 	}
 
 	setWindowTitle(QTLIFE_APP_NAME);
@@ -76,6 +87,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 	connect(m_changeModeAction, SIGNAL(triggered()), this, SLOT(OnChangeMode()));
 	m_gameMenu->addAction(m_changeModeAction);
+
+	connect(m_settingsAction, SIGNAL(triggered()), this, SLOT(OnSettings()));
+	m_helpMenu->addAction(m_settingsAction);
 
 	connect(m_aboutAction, SIGNAL(triggered()), this, SLOT(OnAbout()));
 	m_helpMenu->addAction(m_aboutAction);
@@ -208,3 +222,11 @@ void MainWindow::OnStepBackward()
 }
 
 //-------------------------------------------------------------------------------------------------
+void MainWindow::OnSettings()
+{
+	std::auto_ptr<ICommand> pSettings(ICommand::create(ICommand::Settings));
+	pSettings->exec();
+}
+
+//-------------------------------------------------------------------------------------------------
+

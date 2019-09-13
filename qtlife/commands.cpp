@@ -1,3 +1,9 @@
+/*
+* created by fv01dxf@gmail.com
+* General Public License v3
+*         2019
+*/
+
 #include <QApplication>
 #include <QMessageBox>
 #include "commands.h"
@@ -5,6 +11,7 @@
 #include "strings.h"
 #include "fieldscene.h"
 #include "dynmodel.h"
+#include "settings.h"
 
 //-------------------------------------------------------------------------------------------------
 ICommand* ICommand::create(Type cmdType)
@@ -14,6 +21,7 @@ ICommand* ICommand::create(Type cmdType)
 	case Exit: return new ExitCommand;
 	case ChangeMode: return new ChangeModeCommand;
 	case About: return new AboutCommand;
+	case Settings: return new SettingsCommand;
 	}
 
 	return nullptr;
@@ -141,4 +149,11 @@ void LoadFileCommand::exec()
 }
 
 //-------------------------------------------------------------------------------------------------
+void SettingsCommand::exec()
+{
+	SettingsWindow sttgs;
 
+	sttgs.show();
+}
+
+//-------------------------------------------------------------------------------------------------

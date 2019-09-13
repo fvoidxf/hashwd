@@ -1,3 +1,8 @@
+/*
+* created by fv01dxf@gmail.com
+* General Public License v3
+*         2019
+*/
 #ifndef __GAME_H__
 #define __GAME_H__
 

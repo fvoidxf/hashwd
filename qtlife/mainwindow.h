@@ -1,3 +1,9 @@
+/*
+* created by fv01dxf@gmail.com
+* General Public License v3
+*         2019
+*/
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
@@ -33,6 +39,7 @@ private:
 	QAction									*m_loadFileAction;
 	QAction									*m_stepForwardAction;
 	QAction									*m_stepBackwardAction;
+	QAction									*m_settingsAction;
 
 
 
@@ -50,6 +57,8 @@ public slots:
 
 	void									OnStepForward();
 	void									OnStepBackward();
+
+	void									OnSettings();
 };
 
 //=================================================================================================

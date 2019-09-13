@@ -1,3 +1,8 @@
+/*
+* created by fv01dxf@gmail.com
+* General Public License v3
+*         2019
+*/
 #ifndef __COMMAND_H__
 #define __COMMAND_H__
 
@@ -16,6 +21,7 @@ public:
 		NewFile,
 		LoadFile,
 		SaveFile,
+		Settings,
 	};
 
 

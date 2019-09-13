@@ -1,3 +1,9 @@
+/*
+* created by fv01dxf@gmail.com
+* General Public License v3
+*         2019
+*/
+
 #ifndef __STRINGS_H__
 #define __STRINGS_H__
 
@@ -17,6 +23,7 @@
 #define QTLIFE_ACTION_LOADFILE_RU								"Загрузить"
 #define QTLIFE_ACTION_STEPFORWARD_RU							"Шаг вперед..."
 #define QTLIFE_ACTION_STEPBACKWARD_RU							"Шаг назад..."
+#define	QTLIFE_ACTION_SETTINGS_RU								"Настройки"
 
 #define QTLIFE_STATUSMSG_EDITMODE_RU							"Переключено в режим редактирования..."
 #define QTLIFE_STATUSMSG_GAMEMODE_RU							"Переключено в режим игры.."
@@ -39,6 +46,7 @@
 #define QTLIFE_ACTION_LOADFILE_EN								"Load"
 #define QTLIFE_ACTION_STEPFORWARD_EN							"Step forward..."
 #define QTLIFE_ACTION_STEPBACKWARD_EN							"Step backward..."
+#define	QTLIFE_ACTION_SETTINGS_EN								"Settings"
 
 #define QTLIFE_STATUSMSG_EDITMODE_EN							"Switched to edit mode..."
 #define QTLIFE_STATUSMSG_GAMEMODE_EN							"Switched to game mode..."

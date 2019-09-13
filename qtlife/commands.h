@@ -1,3 +1,8 @@
+/*
+* created by fv01dxf@gmail.com
+* General Public License v3
+*         2019
+*/
 #ifndef __COMMANDS_H__
 #define __COMMANDS_H__
 
@@ -74,6 +79,13 @@ private:
 
 	FieldScene	*m_scene;
 	TSModel		*m_model;
+};
+
+//=================================================================================================
+class SettingsCommand : public ICommand
+{
+public:
+	virtual void exec()override;
 };
 
 //=================================================================================================
