@@ -34,7 +34,8 @@ SOURCES += \
 		dynmodel.cpp \
 		fieldscene.cpp \
 		fieldview.cpp \
-		game.cpp
+		game.cpp \
+		settings.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -47,10 +48,12 @@ HEADERS += \
 		fieldview.h \
 		icommand.h \
 		strings.h \
-		game.h
+		game.h \
+		settings.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+		Settings.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
