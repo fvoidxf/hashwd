@@ -137,6 +137,10 @@ public:
 
 	bool readSettings();
 	void writeSettings();
+
+	void setBackgroundColor(QColor clr) { m_bgAreaColor = clr; }
+	void setCellColor(QColor clr) { m_cellColor = clr; }
+	void setLineColor(QColor clr) { m_brdColor = clr; }
 };
 
 //=================================================================================================
