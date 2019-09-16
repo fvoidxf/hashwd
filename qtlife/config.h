@@ -91,6 +91,12 @@ public:
 	int fieldWidth()const { return m_fieldWidth; }
 	int fieldHeight()const { return m_fieldHeight; }
 
+	void setFieldWidth(int width) { m_fieldWidth = width; }
+	void setFieldHeight(int height) { m_fieldHeight = height; }
+
+	void setColumns(int columns) { m_columns = columns; }
+	void setRows(int rows) { m_rows = rows; }
+
 	int cellWidth()const { return m_fieldWidth / columns(); }
 	int cellHeight()const { return m_fieldHeight / rows(); }
 

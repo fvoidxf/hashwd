@@ -39,6 +39,18 @@ SettingsWindow::SettingsWindow(QWidget *parent)
 	connect(ui->areaClrButton, SIGNAL(clicked()), this, SLOT(OnBgColorChange()));
 	connect(ui->lineClrButton, SIGNAL(clicked()), this, SLOT(OnLineColorChange()));
 	connect(ui->cellClrButton, SIGNAL(clicked()), this, SLOT(OnCellColorChange()));
+
+	QString strCol = QString("%1").arg(Config::instance()->columns());
+	ui->lineEditColumns->setText(strCol);
+
+	QString strRow = QString("%1").arg(Config::instance()->rows());
+	ui->lineEditRows->setText(strRow);
+
+	QString strWidth = QString("%1").arg(Config::instance()->fieldWidth());
+	ui->lineEditWidth->setText(strWidth);
+
+	QString strHeight = QString("%1").arg(Config::instance()->fieldHeight());
+	ui->lineEditHeight->setText(strHeight);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -50,6 +62,16 @@ SettingsWindow::~SettingsWindow()
 //-------------------------------------------------------------------------------------------------
 void SettingsWindow::OnLoadSettings()
 {
+	QString strCol = QString("%1").arg(Config::instance()->columns());
+	QString strRow = QString("%1").arg(Config::instance()->rows());
+	QString strWid = QString("%1").arg(Config::instance()->fieldWidth());
+	QString strHeig = QString("%1").arg(Config::instance()->fieldHeight());
+
+	ui->lineEditColumns->setText(strCol);
+	ui->lineEditRows->setText(strRow);
+	ui->lineEditWidth->setText(strWid);
+	ui->lineEditHeight->setText(strHeig);
+
 	statusBar()->showMessage("Настройки загружены...", 5000);
 	Config::instance()->readSettings();
 }
@@ -57,6 +79,16 @@ void SettingsWindow::OnLoadSettings()
 //-------------------------------------------------------------------------------------------------
 void SettingsWindow::OnSaveSettings()
 {
+	QString strCol = ui->lineEditColumns->text();
+	QString strRow = ui->lineEditRows->text();
+	QString strWid = ui->lineEditWidth->text();
+	QString strHeig = ui->lineEditHeight->text();
+
+	Config::instance()->setColumns(strCol.toInt());
+	Config::instance()->setRows(strRow.toInt());
+	Config::instance()->setFieldWidth(strWid.toInt());
+	Config::instance()->setFieldHeight(strHeig.toInt());
+
 	statusBar()->showMessage("Настройки сохранены...", 5000);
 	Config::instance()->writeSettings();
 }
