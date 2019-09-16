@@ -7,6 +7,7 @@
 #include <QApplication>
 #include <QMessageBox>
 #include <QMainWindow>
+#include <QRandomGenerator> 
 #include "commands.h"
 #include "config.h"
 #include "strings.h"
@@ -25,6 +26,8 @@ ICommand* ICommand::create(Type cmdType)
 	case ChangeMode: return new ChangeModeCommand;
 	case About: return new AboutCommand;
 	case Settings: return new SettingsCommand;
+	case ClearCells: return new ClearFieldCommand;
+	case RandomFill: return new RandomFillCommand;
 	}
 
 	return nullptr;
@@ -160,3 +163,39 @@ void SettingsCommand::exec()
 }
 
 //-------------------------------------------------------------------------------------------------
+void ClearFieldCommand::exec()
+{
+	QMutexLocker lock(m_scene->model()->mutex());
+	for (auto i = 0; i < Config::instance()->columns(); i++)
+	{
+		for (auto j = 0; j < Config::instance()->rows(); j++)
+		{
+			if (m_scene->model()->item(i, j) == 1)
+			{
+				m_scene->model()->item(i, j) = 0;
+				m_scene->removeCell(i, j);
+			}
+		}
+	}
+}
+
+//-------------------------------------------------------------------------------------------------
+void RandomFillCommand::exec()
+{
+	QMutexLocker lock(m_scene->model()->mutex());
+	for (auto i = 0; i < Config::instance()->columns(); i++)
+	{
+		for (auto j = 0; j < Config::instance()->rows(); j++)
+		{
+			quint32 val = QRandomGenerator::global()->bounded(2);
+			m_scene->model()->item(i, j) = val;
+			if (val)
+				m_scene->addCell(i, j);
+			else
+				m_scene->removeCell(i, j);
+		}
+	}
+}
+
+//-------------------------------------------------------------------------------------------------
+

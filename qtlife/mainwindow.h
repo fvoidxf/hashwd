@@ -40,6 +40,8 @@ private:
 	QAction									*m_stepForwardAction;
 	QAction									*m_stepBackwardAction;
 	QAction									*m_settingsAction;
+	QAction									*m_clearFieldAction;
+	QAction									*m_randomFillAction;
 
 
 
@@ -59,6 +61,9 @@ public slots:
 	void									OnStepBackward();
 
 	void									OnSettings();
+
+	void									OnClearField();
+	void									OnRandomFill();
 };
 
 //=================================================================================================

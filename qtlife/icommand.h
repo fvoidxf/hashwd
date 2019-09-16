@@ -22,6 +22,8 @@ public:
 		LoadFile,
 		SaveFile,
 		Settings,
+		ClearCells,
+		RandomFill,
 	};
 
 

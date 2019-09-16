@@ -9,6 +9,33 @@
 #include "dynmodel.h"
 
 //=================================================================================================
+struct SAVEFRAME
+{
+	unsigned long long CurrentFrame;
+	int Columns;
+	int Rows;
+	unsigned int *data;
+};
+
+//=================================================================================================
+struct ADDITIONALHEADER
+{
+	unsigned int reserved;
+};
+
+//=================================================================================================
+struct SAVEGAME
+{
+	unsigned int majVer;
+	unsigned int midVer;
+	unsigned int minVer;
+
+	ADDITIONALHEADER header;
+	unsigned int FramesCount;
+	SAVEFRAME *FRAMES;
+};
+
+//=================================================================================================
 class CompCont
 {
 protected:

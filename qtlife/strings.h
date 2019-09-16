@@ -24,6 +24,8 @@
 #define QTLIFE_ACTION_STEPFORWARD_RU							"Шаг вперед..."
 #define QTLIFE_ACTION_STEPBACKWARD_RU							"Шаг назад..."
 #define	QTLIFE_ACTION_SETTINGS_RU								"Настройки"
+#define QTLIFE_ACTION_CLEARFIELD_RU								"Очистить"
+#define QTLIFE_ACTION_RANDOMFILL_RU								"Случайное заполнение"
 
 #define QTLIFE_STATUSMSG_EDITMODE_RU							"Переключено в режим редактирования..."
 #define QTLIFE_STATUSMSG_GAMEMODE_RU							"Переключено в режим игры.."
@@ -47,6 +49,8 @@
 #define QTLIFE_ACTION_STEPFORWARD_EN							"Step forward..."
 #define QTLIFE_ACTION_STEPBACKWARD_EN							"Step backward..."
 #define	QTLIFE_ACTION_SETTINGS_EN								"Settings"
+#define QTLIFE_ACTION_CLEARFIELD_EN								"Clear"
+#define QTLIFE_ACTION_RANDOMFILL_EN								"Random fill"
 
 #define QTLIFE_STATUSMSG_EDITMODE_EN							"Switched to edit mode..."
 #define QTLIFE_STATUSMSG_GAMEMODE_EN							"Switched to game mode..."

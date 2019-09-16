@@ -28,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent)
 	,m_stepForwardAction(nullptr)
 	,m_stepBackwardAction(nullptr)
 	,m_settingsAction(nullptr)
+	,m_clearFieldAction(nullptr)
+	,m_randomFillAction(nullptr)
 {
 	Config::instance()->createGame(this);
 
@@ -55,6 +57,9 @@ MainWindow::MainWindow(QWidget *parent)
 		m_stepBackwardAction = new QAction(QTLIFE_ACTION_STEPBACKWARD_RU, this);
 
 		m_settingsAction = new QAction(QTLIFE_ACTION_SETTINGS_RU, this);
+
+		m_clearFieldAction = new QAction(QTLIFE_ACTION_CLEARFIELD_RU, this);
+		m_randomFillAction = new QAction(QTLIFE_ACTION_RANDOMFILL_RU, this);
 	}
 	else
 	{
@@ -73,9 +78,18 @@ MainWindow::MainWindow(QWidget *parent)
 		m_stepBackwardAction = new QAction(QTLIFE_ACTION_STEPBACKWARD_EN, this);
 
 		m_settingsAction = new QAction(QTLIFE_ACTION_SETTINGS_EN, this);
+
+		m_clearFieldAction = new QAction(QTLIFE_ACTION_CLEARFIELD_EN, this);
+		m_randomFillAction = new QAction(QTLIFE_ACTION_RANDOMFILL_EN, this);
 	}
 
 	setWindowTitle(QTLIFE_APP_NAME);
+
+	connect(m_clearFieldAction, SIGNAL(triggered()), this, SLOT(OnClearField()));
+	m_gameMenu->addAction(m_clearFieldAction);
+
+	connect(m_randomFillAction, SIGNAL(triggered()), this, SLOT(OnRandomFill()));
+	m_gameMenu->addAction(m_randomFillAction);
 
 	connect(m_stepForwardAction, SIGNAL(triggered()), this, SLOT(OnStepForward()));
 	m_gameMenu->addAction(m_stepForwardAction);
@@ -231,4 +245,19 @@ void MainWindow::OnSettings()
 }
 
 //-------------------------------------------------------------------------------------------------
+void MainWindow::OnClearField()
+{
+	std::auto_ptr<ICommand> pClearField(ICommand::create(ICommand::ClearCells));
+	dynamic_cast<ClearFieldCommand*>(pClearField.get())->setScene(dynamic_cast<FieldScene*>(ui->graphicsView->scene()));
+	pClearField->exec();
+}
 
+//-------------------------------------------------------------------------------------------------
+void MainWindow::OnRandomFill()
+{
+	std::auto_ptr<ICommand> pRandomFill(ICommand::create(ICommand::RandomFill));
+	dynamic_cast<RandomFillCommand*>(pRandomFill.get())->setScene(dynamic_cast<FieldScene*>(ui->graphicsView->scene()));
+	pRandomFill->exec();
+}
+
+//-------------------------------------------------------------------------------------------------

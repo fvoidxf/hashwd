@@ -43,6 +43,38 @@ public:
 };
 
 //=================================================================================================
+class ClearFieldCommand : public ICommand
+{
+public:
+	ClearFieldCommand(){}
+	~ClearFieldCommand(){}
+
+	virtual void exec()override;
+
+protected:
+	FieldScene * m_scene;
+
+public:
+	void setScene(FieldScene* scene) { m_scene = scene; }
+};
+
+//=================================================================================================
+class RandomFillCommand : public ICommand
+{
+public:
+	RandomFillCommand(){}
+	~RandomFillCommand(){}
+
+	virtual void exec()override;
+
+protected:
+	FieldScene * m_scene;
+
+public:
+	void setScene(FieldScene* scene) { m_scene = scene; }
+};
+
+//=================================================================================================
 class AddCellCommand : public ICommand
 {
 public:
